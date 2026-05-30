@@ -956,39 +956,87 @@ body {
 /* ============================================================
    FILES
 ============================================================ */
-.files-module-body { display: flex; height: calc(100vh - 130px); overflow: hidden; border-radius: var(--radius); border: 1px solid var(--border); background: var(--bg-card); box-shadow: var(--shadow-sm); }
-.files-tree-panel { width: 220px; min-width: 180px; border-right: 1px solid var(--border-light); display: flex; flex-direction: column; overflow: hidden; background: var(--bg-hover); flex-shrink: 0; }
-.ft-breadcrumb { font-size: 12px; color: var(--text-secondary); padding: 10px 16px 6px; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; flex-shrink: 0; }
-.ft-breadcrumb .bc-seg { color: var(--accent); cursor: pointer; font-weight: 500; }
-.ft-breadcrumb .bc-seg:hover { text-decoration: underline; }
-.ft-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-.ft-content-scroll { flex: 1; overflow-y: auto; padding: 0 16px 16px; }
-.files-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; padding-top: 12px; }
-.files-search input { padding: 7px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border); font-size: 13px; outline: none; width: 200px; font-family: var(--font); color: var(--text); background: var(--bg-card); }
-.files-search input:focus { border-color: var(--accent); }
-.file-filter-tag { padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border); font-size: 12px; cursor: pointer; background: var(--bg-card); font-weight: 500; color: var(--text-secondary); transition: all var(--transition); font-family: var(--font); }
-.file-filter-tag:hover { border-color: var(--text-tertiary); }
-.file-filter-tag.on { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
-.drop-zone { border: 2px dashed var(--border); border-radius: var(--radius); padding: 28px; text-align: center; color: var(--text-tertiary); margin-bottom: 16px; transition: all var(--transition); cursor: pointer; background: var(--bg-hover); }
-.drop-zone:hover, .drop-zone.drag-over { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
-.drop-zone .dz-icon { font-size: 28px; margin-bottom: 6px; }
-.drop-zone p { font-size: 13px; }
-.drop-zone .dz-hint { font-size: 11px; margin-top: 4px; }
-.files-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
-.file-card { background: var(--bg-card); border-radius: var(--radius-sm); border: 1px solid var(--border); padding: 14px 12px; transition: all var(--transition); cursor: pointer; position: relative; overflow: hidden; }
-.file-card:hover { border-color: var(--border); box-shadow: var(--shadow); }
-.fc-icon { font-size: 28px; margin-bottom: 6px; display: block; }
-.fc-name { font-size: 12px; font-weight: 500; word-break: break-all; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-.fc-meta { font-size: 10px; color: var(--text-tertiary); margin-top: 4px; }
-.fc-actions { position: absolute; top: 8px; right: 8px; display: flex; gap: 2px; opacity: 0; transition: opacity var(--transition); }
-.file-card:hover .fc-actions { opacity: 1; }
-.files-list-view .file-card { display: flex; align-items: center; gap: 10px; padding: 8px 12px; }
-.files-list-view .fc-icon { font-size: 20px; margin: 0; flex-shrink: 0; }
-.files-list-view .fc-info { flex: 1; min-width: 0; }
-.files-list-view .fc-name { -webkit-line-clamp: 1; }
-.view-mode-btns { display: flex; border: 1px solid var(--border); border-radius: var(--radius-xs); overflow: hidden; }
-.vm-btn { padding: 4px 9px; background: var(--bg-card); border: none; cursor: pointer; font-size: 12px; color: var(--text-secondary); transition: all var(--transition); }
-.vm-btn.on { background: var(--accent); color: #fff; }
+/* ── FILE CENTER ───────────────────────────────────────── */
+.fc-wrap { display: flex; height: calc(100vh - 130px); gap: 0; background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden; }
+
+/* Left class nav */
+.fc-class-nav { width: 160px; flex-shrink: 0; background: var(--bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+.fc-class-nav-title { padding: 16px 16px 10px; font-size: 11px; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.8px; }
+.fc-class-btn { display: flex; align-items: center; gap: 10px; padding: 10px 14px; margin: 0 8px 2px; border-radius: var(--radius-sm); cursor: pointer; border: none; background: transparent; color: var(--text-secondary); font-size: 13px; font-family: var(--font); width: calc(100% - 16px); text-align: left; transition: all var(--transition); position: relative; }
+.fc-class-btn:hover { background: var(--bg-hover); color: var(--text); }
+.fc-class-btn.active { background: var(--accent-light); color: var(--accent); font-weight: 600; }
+.fc-class-btn .fc-class-icon { font-size: 16px; flex-shrink: 0; }
+.fc-class-btn .fc-class-count { margin-left: auto; font-size: 11px; background: var(--border); color: var(--text-tertiary); padding: 1px 6px; border-radius: 10px; }
+.fc-class-btn.active .fc-class-count { background: var(--accent-light); color: var(--accent); }
+
+/* Right content */
+.fc-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+
+/* Topbar */
+.fc-topbar { display: flex; align-items: center; gap: 10px; padding: 14px 20px; border-bottom: 1px solid var(--border-light); flex-shrink: 0; }
+.fc-topbar-title { font-size: 16px; font-weight: 700; flex: 1; display: flex; align-items: center; gap: 8px; }
+.fc-topbar-title .fc-class-badge { font-size: 12px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
+.fc-search { flex: 1; max-width: 260px; position: relative; }
+.fc-search input { width: 100%; padding: 8px 12px 8px 34px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; outline: none; background: var(--bg-hover); font-family: var(--font); color: var(--text); transition: all var(--transition); }
+.fc-search input:focus { border-color: var(--accent); background: var(--bg-card); box-shadow: 0 0 0 3px var(--accent-light); }
+.fc-search::before { content: '🔍'; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 12px; pointer-events: none; }
+
+/* Type filter tabs */
+.fc-type-tabs { display: flex; gap: 4px; padding: 10px 20px; border-bottom: 1px solid var(--border-light); flex-shrink: 0; background: var(--bg-hover); }
+.fc-type-tab { padding: 5px 14px; border-radius: 20px; border: 1px solid transparent; font-size: 12px; font-weight: 500; cursor: pointer; background: transparent; color: var(--text-secondary); font-family: var(--font); transition: all var(--transition); display: flex; align-items: center; gap: 5px; }
+.fc-type-tab:hover { background: var(--bg-card); border-color: var(--border); }
+.fc-type-tab.on { background: var(--bg-card); border-color: var(--accent); color: var(--accent); box-shadow: var(--shadow-sm); }
+
+/* File list */
+.fc-list { flex: 1; overflow-y: auto; padding: 16px 20px; }
+.fc-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: var(--text-tertiary); gap: 10px; }
+.fc-empty .fc-empty-icon { font-size: 48px; opacity: 0.3; }
+.fc-empty p { font-size: 14px; }
+
+/* File row */
+.fc-file-row { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-light); background: var(--bg-card); margin-bottom: 8px; transition: all var(--transition); cursor: default; }
+.fc-file-row:hover { border-color: var(--border); box-shadow: var(--shadow-sm); background: var(--bg-hover); }
+.fc-file-icon-wrap { width: 44px; height: 44px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+.fc-file-icon-wrap.pdf { background: rgba(239,68,68,0.1); }
+.fc-file-icon-wrap.doc { background: rgba(59,130,246,0.1); }
+.fc-file-icon-wrap.xls { background: rgba(34,197,94,0.1); }
+.fc-file-icon-wrap.img { background: rgba(249,115,22,0.1); }
+.fc-file-icon-wrap.other { background: var(--bg-hover); }
+.fc-file-info { flex: 1; min-width: 0; }
+.fc-file-name { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fc-file-meta { display: flex; align-items: center; gap: 10px; margin-top: 3px; }
+.fc-file-size { font-size: 11px; color: var(--text-tertiary); }
+.fc-file-date { font-size: 11px; color: var(--text-tertiary); }
+.fc-file-class-tag { font-size: 10px; padding: 1px 7px; border-radius: 10px; font-weight: 500; }
+.fc-file-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.fc-action-btn { padding: 6px 14px; border-radius: var(--radius-xs); border: 1px solid var(--border); background: var(--bg-card); font-size: 12px; font-weight: 500; cursor: pointer; font-family: var(--font); color: var(--text-secondary); transition: all var(--transition); display: flex; align-items: center; gap: 5px; }
+.fc-action-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+.fc-action-btn.danger:hover { border-color: var(--red); color: var(--red); background: rgba(239,68,68,0.08); }
+.fc-action-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.fc-action-btn.primary:hover { background: var(--accent-hover); color: #fff; }
+
+/* Upload progress */
+.fc-upload-progress { padding: 12px 20px; background: var(--accent-light); border-bottom: 1px solid rgba(79,110,247,0.2); display: none; align-items: center; gap: 12px; flex-shrink: 0; }
+.fc-upload-progress.show { display: flex; }
+.fc-progress-bar-wrap { flex: 1; height: 6px; background: rgba(79,110,247,0.2); border-radius: 3px; overflow: hidden; }
+.fc-progress-bar { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.3s; }
+.fc-progress-text { font-size: 12px; color: var(--accent); font-weight: 500; white-space: nowrap; }
+
+/* Preview panel */
+.fc-preview-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+.fc-preview-overlay.show { display: flex; }
+.fc-preview-box { background: var(--bg-card); border-radius: var(--radius-lg); width: 90vw; max-width: 1000px; height: 88vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: var(--shadow-lg); border: 1px solid var(--border); }
+.fc-preview-head { display: flex; align-items: center; padding: 14px 20px; border-bottom: 1px solid var(--border); gap: 12px; flex-shrink: 0; }
+.fc-preview-name { flex: 1; font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fc-preview-body { flex: 1; overflow: hidden; }
+.fc-preview-body iframe { width: 100%; height: 100%; border: none; }
+.fc-preview-body img { width: 100%; height: 100%; object-fit: contain; }
+.fc-preview-nopreview { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: var(--text-tertiary); gap: 12px; }
+.fc-preview-nopreview .np-icon { font-size: 52px; opacity: 0.4; }
+
+/* Stats bar */
+.fc-stats-bar { display: flex; align-items: center; gap: 16px; padding: 8px 20px; border-top: 1px solid var(--border-light); background: var(--bg-hover); font-size: 11px; color: var(--text-tertiary); flex-shrink: 0; }
+.fc-stat-item { display: flex; align-items: center; gap: 4px; }
 
 /* ============================================================
    MEDIA
@@ -1394,40 +1442,87 @@ body {
 
         <!-- ======== FILES ======== -->
         <section class="module" id="files">
-          <div class="files-module-body">
-            <div class="files-tree-panel">
-              <div class="ntp-head">
-                <span class="h-title">文件夹</span>
-                <button id="newFolderBtn" onclick="newFileFolder(null)" title="新建文件夹" style="background:transparent;border:none;cursor:pointer;font-size:12px;color:var(--text-secondary);padding:3px;border-radius:4px;">📂+</button>
-              </div>
-              <div class="files-tree" style="flex:1;overflow-y:auto;padding:6px;" id="filesTree"></div>
+          <div class="fc-wrap">
+            <!-- Left: class navigation -->
+            <div class="fc-class-nav">
+              <div class="fc-class-nav-title">班级分类</div>
+              <button class="fc-class-btn active" data-class="all" onclick="setFileClass('all',this)">
+                <span class="fc-class-icon">📚</span><span>全部文件</span>
+                <span class="fc-class-count" id="fc-count-all">0</span>
+              </button>
+              <button class="fc-class-btn" data-class="grade7" onclick="setFileClass('grade7',this)">
+                <span class="fc-class-icon">📗</span><span>七年级</span>
+                <span class="fc-class-count" id="fc-count-grade7">0</span>
+              </button>
+              <button class="fc-class-btn" data-class="grade8" onclick="setFileClass('grade8',this)">
+                <span class="fc-class-icon">📘</span><span>八年级</span>
+                <span class="fc-class-count" id="fc-count-grade8">0</span>
+              </button>
+              <button class="fc-class-btn" data-class="grade9" onclick="setFileClass('grade9',this)">
+                <span class="fc-class-icon">📕</span><span>九年级</span>
+                <span class="fc-class-count" id="fc-count-grade9">0</span>
+              </button>
+              <button class="fc-class-btn" data-class="evening" onclick="setFileClass('evening',this)">
+                <span class="fc-class-icon">🌙</span><span>晚托班</span>
+                <span class="fc-class-count" id="fc-count-evening">0</span>
+              </button>
+              <button class="fc-class-btn" data-class="common" onclick="setFileClass('common',this)">
+                <span class="fc-class-icon">📎</span><span>公共资料</span>
+                <span class="fc-class-count" id="fc-count-common">0</span>
+              </button>
             </div>
-            <div class="ft-content">
-              <div class="ft-breadcrumb" id="ftBreadcrumb"></div>
-              <div class="ft-content-scroll">
-                <div class="files-toolbar">
-                  <div class="files-search"><input type="text" id="fileSearch" placeholder="搜索文件..." oninput="renderFiles()"></div>
-                  <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
-                    <div style="display:flex;gap:4px;" id="filesFilter">
-                      <span class="file-filter-tag on" data-type="all" onclick="setFileFilter('all',this)">全部</span>
-                      <span class="file-filter-tag" data-type="img" onclick="setFileFilter('img',this)">图片</span>
-                      <span class="file-filter-tag" data-type="video" onclick="setFileFilter('video',this)">视频</span>
-                      <span class="file-filter-tag" data-type="doc" onclick="setFileFilter('doc',this)">文档</span>
-                    </div>
-                    <div class="view-mode-btns">
-                      <button class="vm-btn on" id="vmGrid" onclick="setFilesView('grid')">⊞</button>
-                      <button class="vm-btn" id="vmList" onclick="setFilesView('list')">☰</button>
-                    </div>
-                  </div>
+
+            <!-- Right: content -->
+            <div class="fc-content">
+              <!-- Topbar -->
+              <div class="fc-topbar">
+                <div class="fc-topbar-title" id="fcTopbarTitle">全部文件</div>
+                <div class="fc-search">
+                  <input type="text" id="fileSearch" placeholder="搜索文件名…" oninput="renderFiles()">
                 </div>
-                <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onFileDrop(event)" id="dropZoneWrap">
-                  <div class="dz-icon">📂</div>
-                  <p>点击或拖拽文件到此处上传</p>
-                  <p class="dz-hint">文件保存在本地存储文件夹</p>
-                  <input type="file" id="fileInput" style="display:none" multiple onchange="onFileSelect(event)">
-                </div>
-                <div id="filesGrid" class="files-grid"></div>
+                <input type="file" id="fileInput" style="display:none" multiple onchange="onFileSelect(event)">
+                <button class="fc-action-btn primary" id="uploadFilesBtn" onclick="document.getElementById('fileInput').click()">
+                  ＋ 上传文件
+                </button>
               </div>
+
+              <!-- Upload progress bar -->
+              <div class="fc-upload-progress" id="fcUploadProgress">
+                <span class="fc-progress-text" id="fcProgressText">上传中…</span>
+                <div class="fc-progress-bar-wrap">
+                  <div class="fc-progress-bar" id="fcProgressBar" style="width:0%"></div>
+                </div>
+              </div>
+
+              <!-- Type filter tabs -->
+              <div class="fc-type-tabs">
+                <button class="fc-type-tab on" data-type="all" onclick="setFileFilter('all',this)">📋 全部</button>
+                <button class="fc-type-tab" data-type="pdf" onclick="setFileFilter('pdf',this)">📄 PDF</button>
+                <button class="fc-type-tab" data-type="doc" onclick="setFileFilter('doc',this)">📝 文档</button>
+                <button class="fc-type-tab" data-type="xls" onclick="setFileFilter('xls',this)">📊 表格</button>
+                <button class="fc-type-tab" data-type="img" onclick="setFileFilter('img',this)">🖼️ 图片</button>
+              </div>
+
+              <!-- File list -->
+              <div class="fc-list" id="fcFileList"></div>
+
+              <!-- Stats bar -->
+              <div class="fc-stats-bar" id="fcStatsBar">
+                <span class="fc-stat-item">📁 <span id="fcStatCount">0</span> 个文件</span>
+                <span class="fc-stat-item">💾 共 <span id="fcStatSize">0 MB</span></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Preview overlay -->
+          <div class="fc-preview-overlay" id="fcPreviewOverlay" onclick="closeFcPreview(event)">
+            <div class="fc-preview-box" onclick="event.stopPropagation()">
+              <div class="fc-preview-head">
+                <span class="fc-preview-name" id="fcPreviewName"></span>
+                <button class="fc-action-btn" id="fcPreviewDlBtn">⬇ 下载</button>
+                <button class="fc-action-btn" onclick="closeFcPreview()">✕ 关闭</button>
+              </div>
+              <div class="fc-preview-body" id="fcPreviewBody"></div>
             </div>
           </div>
         </section>
@@ -1547,6 +1642,8 @@ function doLogin() {
   document.getElementById('notesAdminBtns').style.display = isAdmin ? 'flex' : 'none';
   document.getElementById('newFolderBtn').style.display = isAdmin ? 'inline-block' : 'none';
   document.getElementById('uploadMediaBtn').style.display = isAdmin ? 'inline-flex' : 'none';
+  const uploadFilesBtn = document.getElementById('uploadFilesBtn');
+  if (uploadFilesBtn) uploadFilesBtn.style.display = isAdmin ? 'inline-flex' : 'none';
   document.getElementById('memoInputBar').style.display = isAdmin ? 'flex' : 'none';
   document.getElementById('dropZone').style.display = isAdmin ? 'block' : 'none';
 
@@ -1614,7 +1711,7 @@ function switchTab(btn) {
   if (tab === 'projects') renderProjects();
   if (tab === 'notes') renderNotes();
   if (tab === 'memos') renderMemos();
-  if (tab === 'files') { renderFiles(); renderFileTree(); renderBreadcrumb(); }
+  if (tab === 'files') { renderFiles(); updateFcCounts(); }
   if (tab === 'media') renderMedia();
 }
 
@@ -1686,7 +1783,8 @@ const SCHEMA = {
   people: [], rollcall: []
 };
 
-async function selectStorageDir() {
+// selectStorageDir FSA - replaced by cloud version
+async function _fsaSelectStorageDir() {
   try {
     const handle = await window.showDirectoryPicker();
     DB.dirHandle = handle;
@@ -1767,13 +1865,10 @@ async function writeJsonFile(path, data) {
   await ws.close();
 }
 
-async function saveData(key) {
-  if (!DB.dirHandle) { if (!isReadonly) showToast('未连接存储', 'warning'); return false; }
-  try { await writeJsonFile('data/' + key + '.json', DB.data[key]); return true; }
-  catch(e) { showToast('保存失败: ' + e.message, 'error'); return false; }
-}
+// saveData (FSA version) - replaced by cloud version below
 
-async function autoBackup() {
+// autoBackup FSA - replaced by cloud no-op
+async function _fsaAutoBackup() {
   if (!DB.dirHandle) return;
   const ts = new Date().toISOString().replace(/[:.]/g,'-').slice(0,19);
   try {
@@ -1792,7 +1887,7 @@ async function autoBackup() {
   } catch(e) {}
 }
 
-async function manualBackup() { await autoBackup(); showToast('备份完成', 'success'); }
+// manualBackup FSA replaced by cloud version
 
 async function tryAutoReconnect() {
   try {
@@ -1831,7 +1926,8 @@ function showReconnectBanner(handle) {
   setTimeout(() => bar.remove(), 15000);
 }
 
-function updateStorageBar() {
+// updateStorageBar FSA replaced by cloud version
+function _fsaUpdateStorageBar() {
   const dot = document.getElementById('storageDot');
   const text = document.getElementById('storageText');
   const btnBackup = document.getElementById('btnBackup');
@@ -2959,126 +3055,286 @@ function saveMemo(id){
 function deleteMemo(id){if(!confirm('确定删除？'))return;DB.data.memos=(DB.data.memos||[]).filter(m=>m.id!==id);saveData('memos');autoBackup();closeModal();renderMemos();renderDashboard();showToast('已删除','success');}
 
 // ============================================================
-//  FILES
+//  FILE CENTER
 // ============================================================
-let currentFolderPath=[];let fileViewMode='grid';let fileFilter='all';
+let fileClassFilter = 'all';
+let fileTypeFilter  = 'all';
 
-function renderFileTree(){
-  const el=document.getElementById('filesTree');if(!el)return;
-  const folders=DB.data.fileFolders||[];
-  function buildTree(parentId,depth){
-    return folders.filter(f=>f.parentId===(parentId||null)).map(f=>
-      '<div class="nt-node"><div class="nt-row" onclick="enterFileFolder(\''+f.id+'\')"><span class="nt-icon">📁</span><span class="nt-label">'+escapeHtml(f.name)+'</span>' +
-      (isReadonly?'':'<span class="nt-actions"><button style="background:none;border:none;cursor:pointer;font-size:11px;padding:1px 3px;color:var(--text-tertiary);" onclick="event.stopPropagation();deleteFileFolder(\''+f.id+'\')">×</button></span>') +
-      '</div></div>').join('');
+const FC_CLASS_CONFIG = {
+  all:     { label:'全部文件',  icon:'📚', color:'#4f6ef7' },
+  grade7:  { label:'七年级',   icon:'📗', color:'#22c55e' },
+  grade8:  { label:'八年级',   icon:'📘', color:'#3b82f6' },
+  grade9:  { label:'九年级',   icon:'📕', color:'#ef4444' },
+  evening: { label:'晚托班',   icon:'🌙', color:'#a855f7' },
+  common:  { label:'公共资料', icon:'📎', color:'#8e8e93' },
+};
+
+const FC_TYPE_CONFIG = {
+  pdf:   { label:'PDF',  icon:'📄', color:'#ef4444', bg:'rgba(239,68,68,0.1)',   ext:['pdf'] },
+  doc:   { label:'文档', icon:'📝', color:'#3b82f6', bg:'rgba(59,130,246,0.1)',  ext:['doc','docx','txt','md','rtf','ppt','pptx'] },
+  xls:   { label:'表格', icon:'📊', color:'#22c55e', bg:'rgba(34,197,94,0.1)',   ext:['xls','xlsx','csv'] },
+  img:   { label:'图片', icon:'🖼️', color:'#f97316', bg:'rgba(249,115,22,0.1)', ext:['jpg','jpeg','png','gif','bmp','webp','svg'] },
+  video: { label:'视频', icon:'🎬', color:'#a855f7', bg:'rgba(168,85,247,0.1)', ext:['mp4','mov','avi','mkv','webm'] },
+  audio: { label:'音频', icon:'🎵', color:'#14b8a6', bg:'rgba(20,184,166,0.1)', ext:['mp3','wav','ogg','flac','aac'] },
+  other: { label:'其他', icon:'📎', color:'#8e8e93', bg:'var(--bg-hover)',       ext:[] },
+};
+
+function getFileTypeKey(name) {
+  const ext = (name.split('.').pop()||'').toLowerCase();
+  for (const [key, cfg] of Object.entries(FC_TYPE_CONFIG)) {
+    if (cfg.ext.includes(ext)) return key;
   }
-  el.innerHTML=buildTree(null,0)||'<div style="padding:12px;font-size:12px;color:var(--text-tertiary);">暂无文件夹</div>';
+  return 'other';
 }
 
-function renderBreadcrumb(){
-  const el=document.getElementById('ftBreadcrumb');if(!el)return;
-  if(!currentFolderPath.length){el.innerHTML='<span style="color:var(--text-tertiary);">根目录</span>';return;}
-  const folders=DB.data.fileFolders||[];
-  let html='<span class="bc-seg" onclick="currentFolderPath=[];renderBreadcrumb();renderFiles();">根目录</span>';
-  currentFolderPath.forEach((id,i)=>{
-    const f=folders.find(x=>x.id===id);
-    html+=' / '+(i===currentFolderPath.length-1?'<span style="color:var(--text);font-weight:600;">'+escapeHtml(f?.name||id)+'</span>':'<span class="bc-seg" onclick="currentFolderPath=currentFolderPath.slice(0,'+(i+1)+');renderBreadcrumb();renderFiles();">'+escapeHtml(f?.name||id)+'</span>');
-  });
-  el.innerHTML=html;
+function setFileClass(cls, btn) {
+  fileClassFilter = cls;
+  document.querySelectorAll('.fc-class-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const cfg = FC_CLASS_CONFIG[cls] || FC_CLASS_CONFIG.all;
+  document.getElementById('fcTopbarTitle').innerHTML =
+    cfg.icon + ' ' + cfg.label;
+  renderFiles();
 }
 
-function enterFileFolder(id){currentFolderPath=[...currentFolderPath,id];renderBreadcrumb();renderFiles();}
+function setFileFilter(type, btn) {
+  fileTypeFilter = type;
+  document.querySelectorAll('.fc-type-tab').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  renderFiles();
+}
 
-function renderFiles(){
-  const grid=document.getElementById('filesGrid');if(!grid)return;
-  const currentFolderId=currentFolderPath[currentFolderPath.length-1]||null;
-  const search=(document.getElementById('fileSearch')?.value||'').toLowerCase();
-  const folders=(DB.data.fileFolders||[]).filter(f=>f.parentId===currentFolderId);
-  let files=(DB.data.filesIndex||[]).filter(f=>{
-    if(f.folderId!==currentFolderId)return false;
-    if(fileFilter!=='all'&&f.type!==fileFilter)return false;
-    if(search&&!f.name.toLowerCase().includes(search))return false;
+function getVisibleFiles() {
+  const search = (document.getElementById('fileSearch')?.value || '').toLowerCase();
+  return (DB.data.filesIndex || []).filter(f => {
+    // class filter
+    if (fileClassFilter !== 'all' && (f.classGroup || 'common') !== fileClassFilter) return false;
+    // For readonly students: only see their class + common
+    if (isReadonly && currentRole) {
+      const fg = f.classGroup || 'common';
+      const userClass = ROLES[currentRole].classFilter;
+      if (fg !== 'common' && fg !== userClass) return false;
+    }
+    // type filter
+    if (fileTypeFilter !== 'all' && getFileTypeKey(f.name) !== fileTypeFilter) return false;
+    // search
+    if (search && !f.name.toLowerCase().includes(search)) return false;
     return true;
   });
-  let h='';
-  if(folders.length){
-    h+='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-bottom:14px;">';
-    folders.forEach(f=>{
-      h+='<div class="folder-card" onclick="enterFileFolder(\''+f.id+'\')">' +
-        '<div class="fc-icon">📁</div><div class="fc-name">'+escapeHtml(f.name)+'</div>' +
-        '<div class="fc-count">'+(DB.data.filesIndex||[]).filter(x=>x.folderId===f.id).length+' 个文件</div>' +
-        (isReadonly?'':'<div class="fc-actions"><button class="btn btn-sm btn-danger" onclick="event.stopPropagation();deleteFileFolder(\''+f.id+'\')">删除</button></div>') +
-        '</div>';
-    });
-    h+='</div>';
+}
+
+function updateFcCounts() {
+  const files = DB.data.filesIndex || [];
+  const countEl = id => document.getElementById('fc-count-' + id);
+  const countFor = cls => cls === 'all'
+    ? files.length
+    : files.filter(f => (f.classGroup || 'common') === cls).length;
+  ['all','grade7','grade8','grade9','evening','common'].forEach(cls => {
+    const el = countEl(cls); if (el) el.textContent = countFor(cls);
+  });
+}
+
+function renderFiles() {
+  updateFcCounts();
+  const list = document.getElementById('fcFileList');
+  if (!list) return;
+  const files = getVisibleFiles();
+
+  // Stats
+  const statCount = document.getElementById('fcStatCount');
+  const statSize  = document.getElementById('fcStatSize');
+  if (statCount) statCount.textContent = files.length;
+  if (statSize)  statSize.textContent  = fmtSize(files.reduce((s,f)=>s+(f.size||0),0));
+
+  if (!files.length) {
+    list.innerHTML = '<div class="fc-empty"><div class="fc-empty-icon">📭</div><p>' +
+      (DB.dirHandle || true ? '该分类暂无文件' : '请先连接存储') + '</p>' +
+      (isReadonly ? '' : '<button class="fc-action-btn primary" onclick="document.getElementById('fileInput').click()">＋ 上传文件</button>') +
+      '</div>';
+    return;
   }
-  if(!files.length&&!folders.length){grid.innerHTML='<div class="empty-state"><div>暂无文件</div></div>';return;}
-  const ICONS={pdf:'📄',doc:'📝',xls:'📊',img:'🖼️',video:'🎬',audio:'🎵',archive:'📦',default:'📎'};
-  if(fileViewMode==='list')grid.parentElement.classList.add('files-list-view');else grid.parentElement.classList.remove('files-list-view');
-  h+=files.map(f=>{
-    const icon=ICONS[f.type]||ICONS.default;
-    return '<div class="file-card"><span class="fc-icon">'+icon+'</span>' +
-      (fileViewMode==='list'?'<div class="fc-info"><div class="fc-name">'+escapeHtml(f.name)+'</div><div class="fc-meta">'+fmtSize(f.size)+' · '+(f.date||'').slice(0,10)+'</div></div>':'<div class="fc-name">'+escapeHtml(f.name)+'</div><div class="fc-meta">'+fmtSize(f.size)+'</div>') +
-      '<div class="fc-actions"><button class="btn btn-sm" onclick="downloadFile(\''+f.id+'\')">下载</button>' +
-      (isReadonly?'':'<button class="btn btn-sm btn-danger" onclick="deleteFile(\''+f.id+'\')">删除</button>') +
-      '</div></div>';
+
+  list.innerHTML = files.map(f => {
+    const typeKey = getFileTypeKey(f.name);
+    const tc = FC_TYPE_CONFIG[typeKey] || FC_TYPE_CONFIG.other;
+    const cc = FC_CLASS_CONFIG[f.classGroup || 'common'] || FC_CLASS_CONFIG.common;
+    const url = SB.fileUrl('files', f.path || f.name);
+    const canPreview = ['pdf','img'].includes(typeKey);
+
+    return '<div class="fc-file-row">' +
+      // Icon
+      '<div class="fc-file-icon-wrap ' + typeKey + '" style="background:' + tc.bg + '">' +
+        '<span style="font-size:22px;">' + tc.icon + '</span>' +
+      '</div>' +
+      // Info
+      '<div class="fc-file-info">' +
+        '<div class="fc-file-name" title="' + escapeHtml(f.name) + '">' + escapeHtml(f.name) + '</div>' +
+        '<div class="fc-file-meta">' +
+          '<span class="fc-file-size">' + fmtSize(f.size) + '</span>' +
+          '<span style="color:var(--border);">·</span>' +
+          '<span class="fc-file-date">' + (f.date||f.created_at||'').slice(0,10) + '</span>' +
+          '<span style="color:var(--border);">·</span>' +
+          '<span class="fc-file-class-tag" style="background:' + tc.bg + ';color:' + tc.color + ';">' + tc.label + '</span>' +
+          '<span class="fc-file-class-tag" style="background:rgba(0,0,0,0.05);color:' + cc.color + ';">' + cc.icon + ' ' + cc.label + '</span>' +
+        '</div>' +
+      '</div>' +
+      // Actions
+      '<div class="fc-file-actions">' +
+        (canPreview ? '<button class="fc-action-btn" onclick="previewFile('' + f.id + '','' + encodeURIComponent(f.name) + '','' + typeKey + '')">👁 预览</button>' : '') +
+        '<button class="fc-action-btn" onclick="downloadFileById('' + f.id + '')">⬇ 下载</button>' +
+        (isReadonly ? '' : '<button class="fc-action-btn danger" onclick="deleteFile('' + f.id + '')">🗑</button>') +
+      '</div>' +
+    '</div>';
   }).join('');
-  grid.innerHTML=h;
 }
 
-function setFilesView(mode){fileViewMode=mode;document.getElementById('vmGrid').classList.toggle('on',mode==='grid');document.getElementById('vmList').classList.toggle('on',mode==='list');renderFiles();}
-function setFileFilter(type,el){fileFilter=type;document.querySelectorAll('#filesFilter .file-filter-tag').forEach(t=>t.classList.toggle('on',t.dataset.type===type));renderFiles();}
-function onDragOver(e){e.preventDefault();document.getElementById('dropZone').classList.add('drag-over');}
-function onDragLeave(){document.getElementById('dropZone').classList.remove('drag-over');}
-async function onFileDrop(e){e.preventDefault();document.getElementById('dropZone').classList.remove('drag-over');if(isReadonly)return;await uploadFiles(Array.from(e.dataTransfer.files));}
-async function onFileSelect(e){if(isReadonly)return;await uploadFiles(Array.from(e.target.files||[]));}
-
-async function uploadFiles(files){
-  if(isReadonly){showToast('只读模式，无法上传','warning');return;}
-  if(!DB.dirHandle){showToast('请先连接本地文件夹','warning');return;}
-  const list=DB.data.filesIndex||[];
-  const currentFolderId=currentFolderPath[currentFolderPath.length-1]||null;
-  for(const file of files){
-    try{
-      const filesDir=await DB.dirHandle.getDirectoryHandle('files',{create:true});
-      const fh=await filesDir.getFileHandle(file.name,{create:true});
-      const ws=await fh.createWritable();await ws.write(file);await ws.close();
-      list.push({id:'f_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),name:file.name,size:file.size,type:getFileType(file.name),path:'files/'+file.name,folderId:currentFolderId,date:new Date().toISOString()});
-    }catch(err){showToast('上传失败: '+file.name,'error');}
+function previewFile(id, encodedName, typeKey) {
+  const f = (DB.data.filesIndex || []).find(x => x.id === id); if (!f) return;
+  const url = SB.fileUrl('files', f.path || f.name);
+  const name = decodeURIComponent(encodedName);
+  document.getElementById('fcPreviewName').textContent = name;
+  const dlBtn = document.getElementById('fcPreviewDlBtn');
+  dlBtn.onclick = () => downloadFileById(id);
+  const body = document.getElementById('fcPreviewBody');
+  if (typeKey === 'pdf') {
+    body.innerHTML = '<iframe src="' + url + '" style="width:100%;height:100%;border:none;"></iframe>';
+  } else if (typeKey === 'img') {
+    body.innerHTML = '<img src="' + url + '" style="width:100%;height:100%;object-fit:contain;" onerror="this.parentElement.innerHTML='<div class=fc-preview-nopreview><div class=np-icon>🖼️</div><p>图片加载失败，请下载查看</p></div>'">';
+  } else {
+    body.innerHTML = '<div class="fc-preview-nopreview"><div class="np-icon">📄</div><p>此格式不支持在线预览</p><button class="fc-action-btn primary" style="margin-top:12px;" onclick="downloadFileById('' + id + '')">⬇ 下载查看</button></div>';
   }
-  DB.data.filesIndex=list;saveData('filesIndex');autoBackup();renderFiles();showToast('已上传 '+files.length+' 个文件','success');
+  document.getElementById('fcPreviewOverlay').classList.add('show');
 }
 
-function getFileType(name){const ext=(name.split('.').pop()||'').toLowerCase();if(['pdf'].includes(ext))return'pdf';if(['doc','docx','txt','rtf','md'].includes(ext))return'doc';if(['xls','xlsx','csv'].includes(ext))return'xls';if(['jpg','jpeg','png','gif','bmp','webp','svg'].includes(ext))return'img';if(['mp4','avi','mov','mkv','webm'].includes(ext))return'video';if(['mp3','wav','ogg','flac','aac'].includes(ext))return'audio';if(['zip','rar','7z','tar','gz'].includes(ext))return'archive';return'default';}
+function closeFcPreview(e) {
+  if (e && e.target !== document.getElementById('fcPreviewOverlay')) return;
+  document.getElementById('fcPreviewOverlay').classList.remove('show');
+  document.getElementById('fcPreviewBody').innerHTML = '';
+}
 
-async function downloadFile(id){
-  if(!DB.dirHandle){showToast('未连接存储','warning');return;}
-  const f=(DB.data.filesIndex||[]).find(x=>x.id===id);if(!f)return;
-  try{const parts=f.path.split('/');let dir=DB.dirHandle;for(let i=0;i<parts.length-1;i++)dir=await dir.getDirectoryHandle(parts[i]);const fh=await dir.getFileHandle(parts[parts.length-1]);const file=await fh.getFile();const url=URL.createObjectURL(file);const a=document.createElement('a');a.href=url;a.download=f.name;a.click();URL.revokeObjectURL(url);}catch(e){showToast('下载失败','error');}
+async function downloadFileById(id) {
+  const f = (DB.data.filesIndex || []).find(x => x.id === id); if (!f) return;
+  const url = SB.fileUrl('files', f.path || f.name);
+  const a = document.createElement('a');
+  a.href = url; a.download = f.name; a.target = '_blank'; a.click();
 }
-async function deleteFile(id){
-  if(isReadonly||!confirm('确定删除？'))return;
-  const f=(DB.data.filesIndex||[]).find(x=>x.id===id);if(!f)return;
-  try{const parts=f.path.split('/');let dir=DB.dirHandle;for(let i=0;i<parts.length-1;i++)dir=await dir.getDirectoryHandle(parts[i]);await dir.removeEntry(parts[parts.length-1]);}catch(e){}
-  DB.data.filesIndex=(DB.data.filesIndex||[]).filter(x=>x.id!==id);saveData('filesIndex');autoBackup();renderFiles();showToast('已删除','success');
+
+async function deleteFile(id) {
+  if (isReadonly || !confirm('确定删除此文件？')) return;
+  const f = (DB.data.filesIndex || []).find(x => x.id === id); if (!f) return;
+  // Delete from Supabase Storage
+  try {
+    await fetch(SUPABASE_URL + '/storage/v1/object/files/' + encodeURIComponent(f.path || f.name), {
+      method: 'DELETE',
+      headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY }
+    });
+  } catch(e) {}
+  DB.data.filesIndex = (DB.data.filesIndex || []).filter(x => x.id !== id);
+  await saveData('filesIndex');
+  renderFiles(); showToast('已删除', 'success');
 }
-function newFileFolder(parentId){
-  if(isReadonly)return;
-  const folderId=currentFolderPath[currentFolderPath.length-1]||null;
-  openModal('新建文件夹','<div class="form-group"><label class="form-label">文件夹名称</label><input class="form-input" id="newFolderName"></div>',
-    '<button class="btn" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="doNewFolder(\''+folderId+'\')">创建</button>');
+
+async function onFileSelect(e) {
+  if (isReadonly) return;
+  await uploadFilesNew(Array.from(e.target.files || []));
+  e.target.value = '';
 }
-function doNewFolder(parentId){
-  const name=(document.getElementById('newFolderName')?.value||'').trim();if(!name)return;
-  (DB.data.fileFolders=DB.data.fileFolders||[]).push({id:'ff_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),name,parentId:parentId||null});
-  saveData('fileFolders');autoBackup();closeModal();renderFileTree();renderFiles();showToast('已创建','success');
+
+async function uploadFilesNew(files) {
+  if (isReadonly) { showToast('只读模式，无法上传', 'warning'); return; }
+  if (!files.length) return;
+
+  // Ask which class this batch belongs to
+  const classGroup = await pickFileClass();
+  if (!classGroup) return; // cancelled
+
+  const progress = document.getElementById('fcUploadProgress');
+  const bar      = document.getElementById('fcProgressBar');
+  const txt      = document.getElementById('fcProgressText');
+  progress.classList.add('show');
+
+  const list = DB.data.filesIndex || [];
+  let done = 0;
+
+  for (const file of files) {
+    txt.textContent = '上传中 ' + (done+1) + ' / ' + files.length + ' — ' + file.name;
+    bar.style.width = Math.round(done / files.length * 100) + '%';
+    try {
+      const path = Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9._一-龥-]/g, '_');
+      // Use multipart/form-data for better Supabase compatibility
+      const formData = new FormData();
+      formData.append('', file);
+      const res = await fetch(
+        SUPABASE_URL + '/storage/v1/object/files/' + encodeURIComponent(path),
+        {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+            'x-upsert': 'true',
+          },
+          body: file
+        }
+      );
+      if (!res.ok) {
+        const errText = await res.text();
+        console.error('Upload error:', res.status, errText);
+        showToast('上传失败: ' + file.name + ' (' + res.status + ')', 'error');
+        done++; continue;
+      }
+      list.push({
+        id: 'f_' + Date.now() + '_' + Math.random().toString(36).slice(2,6),
+        name: file.name, size: file.size,
+        type: getFileTypeKey(file.name),
+        path, classGroup, folderId: null,
+        date: new Date().toISOString()
+      });
+      done++;
+    } catch(e) {
+      showToast('上传失败: ' + file.name, 'error');
+      console.error(e); done++;
+    }
+  }
+
+  bar.style.width = '100%';
+  txt.textContent = '上传完成 ' + done + ' 个文件';
+  setTimeout(() => progress.classList.remove('show'), 2000);
+
+  DB.data.filesIndex = list;
+  await saveData('filesIndex');
+  renderFiles();
+  showToast('已上传 ' + done + ' 个文件', 'success');
 }
-function deleteFileFolder(id){
-  if(isReadonly||!confirm('删除文件夹？（文件不会被删除）'))return;
-  DB.data.fileFolders=(DB.data.fileFolders||[]).filter(f=>f.id!==id);
-  DB.data.filesIndex=(DB.data.filesIndex||[]).map(f=>f.folderId===id?{...f,folderId:null}:f);
-  saveData('fileFolders');saveData('filesIndex');autoBackup();renderFileTree();renderFiles();showToast('已删除','success');
+
+function pickFileClass() {
+  return new Promise(resolve => {
+    const classes = [
+      { key:'common',  label:'公共资料', icon:'📎' },
+      { key:'grade7',  label:'七年级',   icon:'📗' },
+      { key:'grade8',  label:'八年级',   icon:'📘' },
+      { key:'grade9',  label:'九年级',   icon:'📕' },
+      { key:'evening', label:'晚托班',   icon:'🌙' },
+    ];
+    const body = '<p style="margin-bottom:14px;color:var(--text-secondary);font-size:13px;">请选择此文件归属的班级，学生只能看到自己班级和公共资料。</p>' +
+      '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">' +
+      classes.map(c =>
+        '<button onclick="resolvePickClass('' + c.key + '')" style="padding:14px 8px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg-hover);cursor:pointer;font-family:var(--font);font-size:13px;transition:all 0.15s;" onmouseover="this.style.borderColor='var(--accent)';this.style.background='var(--accent-light)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--bg-hover)'">' +
+        '<div style="font-size:22px;margin-bottom:4px;">' + c.icon + '</div>' +
+        '<div style="font-weight:500;">' + c.label + '</div>' +
+        '</button>'
+      ).join('') +
+      '</div>';
+    window._resolvePickClass = (key) => { closeModal(); resolve(key); };
+    openModal('选择归属班级', body,
+      '<button class="btn" onclick="window._resolvePickClass(null);closeModal()">取消</button>');
+  });
 }
+function resolvePickClass(key) { if(window._resolvePickClass) window._resolvePickClass(key); }
+
+// Stubs kept for backward compatibility
+function renderFileTree(){}
+function renderBreadcrumb(){}
+function newFileFolder(){}
 
 // ============================================================
 //  MEDIA
@@ -3087,7 +3343,7 @@ let mediaFilter='all';const mediaObjUrls=new Map();
 
 function setMediaFilter(f){mediaFilter=f;document.querySelectorAll('#mediaFilters .memo-filter').forEach(b=>b.classList.toggle('active',b.dataset.filter===f));renderMedia();}
 
-function renderMedia(){
+function _fsaRenderMedia(){
   const grid=document.getElementById('mediaGrid');if(!grid)return;
   const search=(document.getElementById('mediaSearch')?.value||'').toLowerCase();
   const filtered=(DB.data.media||[]).filter(m=>(mediaFilter==='all'||m.type===mediaFilter)&&(!search||m.name.toLowerCase().includes(search)));
@@ -3111,7 +3367,7 @@ function renderMedia(){
   }
 }
 
-async function uploadMedia(){
+async function _fsaUploadMedia(){
   if(isReadonly){showToast('只读模式','warning');return;}
   const input=document.createElement('input');input.type='file';input.accept='image/*,video/*,audio/*';input.multiple=true;
   input.onchange=async()=>{
@@ -3148,11 +3404,11 @@ function renderAll(){
   try{renderProjects();}catch(e){}
   try{renderNotes();}catch(e){}
   try{renderMemos();}catch(e){}
-  try{renderFiles();renderFileTree();renderBreadcrumb();}catch(e){}
+  try{renderFiles();updateFcCounts();}catch(e){}
   try{renderMedia();}catch(e){}
 }
 
-function initApp(){
+function _fsaInitApp(){
   updateStorageBar();
   // Restore sidebar state
   if(localStorage.getItem('wb_sidebar_collapsed')==='1') toggleSidebar();
@@ -3175,56 +3431,55 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 // Lightweight Supabase REST wrapper (no npm needed)
 const SB = {
+  _h(extra={}) {
+    return { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY, 'Content-Type': 'application/json', ...extra };
+  },
   async req(method, path, body) {
     const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
-      method,
-      headers: {
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
-        'Content-Type': 'application/json',
-        'Prefer': method === 'POST' ? 'return=representation' : 'return=minimal'
-      },
-      body: body ? JSON.stringify(body) : undefined
+      method, headers: this._h({'Prefer':'return=minimal'}),
+      body: body != null ? JSON.stringify(body) : undefined
     });
-    if (!res.ok) {
-      const err = await res.text();
-      throw new Error(err);
-    }
+    if (!res.ok) { const e = await res.text(); throw new Error(res.status + ': ' + e); }
     const text = await res.text();
     return text ? JSON.parse(text) : null;
   },
-  async select(table, query='') { return this.req('GET', table + '?' + query, null); },
-  async insert(table, data) { return this.req('POST', table, data); },
+  async select(table, query='') {
+    const res = await fetch(SUPABASE_URL + '/rest/v1/' + table + (query?'?'+query:''), {
+      headers: this._h()
+    });
+    if (!res.ok) { const e = await res.text(); throw new Error(res.status + ': ' + e); }
+    const text = await res.text();
+    return text ? JSON.parse(text) : [];
+  },
   async upsert(table, data) {
-    return fetch(SUPABASE_URL + '/rest/v1/' + table, {
+    if (!data || (Array.isArray(data) && !data.length)) return true;
+    const res = await fetch(SUPABASE_URL + '/rest/v1/' + table, {
       method: 'POST',
-      headers: {
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
-        'Content-Type': 'application/json',
-        'Prefer': 'resolution=merge-duplicates,return=minimal'
-      },
+      headers: this._h({'Prefer':'resolution=merge-duplicates,return=minimal'}),
       body: JSON.stringify(data)
     });
+    if (!res.ok) { const e = await res.text(); throw new Error(res.status + ': ' + e); }
+    return true;
   },
-  async update(table, match, data) { return this.req('PATCH', table + '?' + match, data); },
-  async delete(table, match) { return this.req('DELETE', table + '?' + match, null); },
-
-  // Storage
+  // Delete all rows: uses id >= '' for text PKs, or person_id for rollcall
+  async deleteAll(table) {
+    const filter = table === 'rollcall' ? 'person_id=gte.' : 'id=gte.';
+    const res = await fetch(SUPABASE_URL + '/rest/v1/' + table + '?' + filter, {
+      method: 'DELETE', headers: this._h({'Prefer':'return=minimal'})
+    });
+    return res.ok || res.status === 404;
+  },
   async uploadFile(bucket, path, file) {
-    const res = await fetch(SUPABASE_URL + '/storage/v1/object/' + bucket + '/' + path, {
+    const res = await fetch(SUPABASE_URL + '/storage/v1/object/' + bucket + '/' + encodeURIComponent(path), {
       method: 'POST',
-      headers: {
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
-        'Content-Type': file.type || 'application/octet-stream'
-      },
+      headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY, 'Content-Type': file.type||'application/octet-stream', 'x-upsert':'true' },
       body: file
     });
-    return res.ok;
+    if (!res.ok) { const e = await res.text(); throw new Error(e); }
+    return true;
   },
   fileUrl(bucket, path) {
-    return SUPABASE_URL + '/storage/v1/object/public/' + bucket + '/' + path;
+    return SUPABASE_URL + '/storage/v1/object/public/' + bucket + '/' + encodeURIComponent(path);
   }
 };
 
@@ -3308,8 +3563,9 @@ async function loadCloudData() {
     }));
 
     DB.data.filesIndex = (filesIdx||[]).map(f=>({
-      id:f.id, name:f.name, size:f.size, type:f.type,
-      path:f.storage_path, folderId:f.folder_id||null, date:f.created_at
+      id:f.id, name:f.name, size:f.size||0, type:f.type||'other',
+      path:f.storage_path||f.name, classGroup:f.folder_id||'common',
+      folderId:f.folder_id||null, date:f.created_at
     }));
 
     DB.data.media = (media||[]).map(m=>({
@@ -3352,10 +3608,14 @@ function showLoadingOverlay(show) {
 // ============================================================
 
 // Override saveData to sync to Supabase
-const _localSaveData = saveData;
+// (replaces the original saveData defined earlier)
 async function saveData(key) {
-  // Always save to cloud
-  try { await cloudSave(key); } catch(e) { showToast('云同步失败: '+e.message,'error'); }
+  try {
+    await cloudSave(key);
+  } catch(e) {
+    console.error('云同步失败:', e);
+    showToast('云同步失败: ' + e.message, 'error');
+  }
 }
 
 async function cloudSave(key) {
@@ -3373,9 +3633,7 @@ async function cloudSave(key) {
 }
 
 async function syncSchedules() {
-  // Delete all + re-insert (simple approach for small datasets)
-  await SB.req('DELETE','schedules?id=neq.PLACEHOLDER',null).catch(()=>{});
-  await SB.req('DELETE','schedules',null).catch(()=>{});
+  await SB.deleteAll('schedules');
   const rows = (DB.data.schedules||[]).map(s=>({
     id:s.id, title:s.title, date:s.date, start_time:s.start||null,
     end_time:s.end||null, type:s.type||'all', note:s.desc||''
@@ -3384,7 +3642,7 @@ async function syncSchedules() {
 }
 
 async function syncPeople() {
-  await SB.req('DELETE','people',null).catch(()=>{});
+  await SB.deleteAll('people');
   const rows = (DB.data.people||[]).map(p=>({
     id:p.id, name:p.name, class_group:p.group||'', note:p.note||''
   }));
@@ -3399,12 +3657,12 @@ async function syncRollcall() {
       rows.push({person_id:personId, date, status:r.status||'', note:r.note||''});
     });
   });
-  await SB.req('DELETE','rollcall',null).catch(()=>{});
+  await SB.deleteAll('rollcall');
   if(rows.length) await SB.upsert('rollcall', rows);
 }
 
 async function syncProjects() {
-  await SB.req('DELETE','projects',null).catch(()=>{});
+  await SB.deleteAll('projects');
   const rows = (DB.data.projects||[]).map(p=>({
     id:p.id, name:p.name, start_date:p.start||null, end_date:p.end||null,
     color:p.color||'#4f6ef7', note:p.desc||'', tasks:p.tasks||[]
@@ -3413,10 +3671,9 @@ async function syncProjects() {
 }
 
 async function syncNotes() {
-  // Sync cats, folders, notes
-  await SB.req('DELETE','notes',null).catch(()=>{});
-  await SB.req('DELETE','notes_folders',null).catch(()=>{});
-  await SB.req('DELETE','notes_cats',null).catch(()=>{});
+  await SB.deleteAll('notes');
+  await SB.deleteAll('notes_folders');
+  await SB.deleteAll('notes_cats');
 
   const cats=[]; const folders=[]; const notes=[];
   (DB.data.notesCats||[]).forEach((cat,ci)=>{
@@ -3434,7 +3691,7 @@ async function syncNotes() {
 }
 
 async function syncMemos() {
-  await SB.req('DELETE','memos',null).catch(()=>{});
+  await SB.deleteAll('memos');
   const rows = (DB.data.memos||[]).map(m=>({
     id:m.id, text:m.text, priority:m.priority||'medium',
     done:!!m.done, due_date:m.dueDate||null, created_at:m.createdAt
@@ -3443,7 +3700,7 @@ async function syncMemos() {
 }
 
 async function syncFileFolders() {
-  await SB.req('DELETE','file_folders',null).catch(()=>{});
+  await SB.deleteAll('file_folders');
   const rows = (DB.data.fileFolders||[]).map(f=>({
     id:f.id, name:f.name, parent_id:f.parentId||null
   }));
@@ -3451,45 +3708,23 @@ async function syncFileFolders() {
 }
 
 async function syncFilesIndex() {
-  await SB.req('DELETE','files_index',null).catch(()=>{});
+  await SB.deleteAll('files_index');
   const rows = (DB.data.filesIndex||[]).map(f=>({
-    id:f.id, name:f.name, size:f.size, type:f.type,
-    storage_path:f.path, folder_id:f.folderId||null
+    id:f.id, name:f.name, size:f.size||0, type:getFileTypeKey(f.name),
+    storage_path:f.path||f.name, folder_id:f.classGroup||'common'
   }));
   if(rows.length) await SB.upsert('files_index', rows);
 }
 
 async function syncMedia() {
-  await SB.req('DELETE','media',null).catch(()=>{});
+  await SB.deleteAll('media');
   const rows = (DB.data.media||[]).map(m=>({
     id:m.id, name:m.name, type:m.type, size:m.size, storage_path:m.path
   }));
   if(rows.length) await SB.upsert('media', rows);
 }
 
-// Override file upload to use Supabase Storage
-async function uploadFiles(files) {
-  if(isReadonly){showToast('只读模式，无法上传','warning');return;}
-  const list = DB.data.filesIndex||[];
-  const currentFolderId = currentFolderPath[currentFolderPath.length-1]||null;
-  let ok=0;
-  for(const file of files){
-    try{
-      const path = Date.now()+'_'+file.name;
-      const uploaded = await SB.uploadFile('files', path, file);
-      if(uploaded){
-        list.push({
-          id:'f_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),
-          name:file.name, size:file.size, type:getFileType(file.name),
-          path, folderId:currentFolderId, date:new Date().toISOString()
-        });
-        ok++;
-      }
-    } catch(e){ showToast('上传失败: '+file.name,'error'); }
-  }
-  DB.data.filesIndex=list;
-  if(ok){ await saveData('filesIndex'); renderFiles(); showToast('已上传 '+ok+' 个文件','success'); }
-}
+// uploadFiles handled by uploadFilesNew in new file center
 
 // Override media upload
 async function uploadMedia(){
@@ -3516,7 +3751,7 @@ async function uploadMedia(){
 
 // Override renderMedia to use Supabase Storage URLs
 const _origRenderMedia = renderMedia;
-function renderMedia(){
+function _fsaRenderMedia(){
   const grid=document.getElementById('mediaGrid');if(!grid)return;
   const search=(document.getElementById('mediaSearch')?.value||'').toLowerCase();
   const filtered=(DB.data.media||[]).filter(m=>(mediaFilter==='all'||m.type===mediaFilter)&&(!search||m.name.toLowerCase().includes(search)));
