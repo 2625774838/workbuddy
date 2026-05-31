@@ -1640,12 +1640,12 @@ function doLogin() {
   document.getElementById('rcSaveArea').style.display = isAdmin ? 'flex' : 'none';
   document.getElementById('addProjBtn').style.display = isAdmin ? 'inline-flex' : 'none';
   document.getElementById('notesAdminBtns').style.display = isAdmin ? 'flex' : 'none';
-  document.getElementById('newFolderBtn').style.display = isAdmin ? 'inline-block' : 'none';
+  // newFolderBtn removed in new file center
   document.getElementById('uploadMediaBtn').style.display = isAdmin ? 'inline-flex' : 'none';
   const uploadFilesBtn = document.getElementById('uploadFilesBtn');
   if (uploadFilesBtn) uploadFilesBtn.style.display = isAdmin ? 'inline-flex' : 'none';
   document.getElementById('memoInputBar').style.display = isAdmin ? 'flex' : 'none';
-  document.getElementById('dropZone').style.display = isAdmin ? 'block' : 'none';
+  // dropZone removed in new file center design
 
   // Apply class filter for students
   if (isReadonly && ROLES[role].classFilter) {
