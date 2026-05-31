@@ -1605,59 +1605,60 @@ function selectRole(btn) {
 }
 
 function doLogin() {
-  const roleBtn = document.querySelector('.role-btn.selected');
-  if (!roleBtn) { showLoginErr('请先选择身份'); return; }
-  const role = roleBtn.dataset.role;
-  const pwd = document.getElementById('loginPwd').value;
-  if (!ROLES[role]) { showLoginErr('身份无效'); return; }
-  if (pwd !== ROLES[role].pwd) { showLoginErr('密码错误，请重试'); return; }
+  try {
+    const roleBtn = document.querySelector('.role-btn.selected');
+    if (!roleBtn) { showLoginErr('请先选择身份'); return; }
+    const role = roleBtn.dataset.role;
+    const pwd = document.getElementById('loginPwd').value;
+    if (!ROLES[role]) { showLoginErr('身份无效'); return; }
+    if (pwd !== ROLES[role].pwd) { showLoginErr('密码错误，请重试'); return; }
 
-  currentRole = role;
-  isReadonly = ROLES[role].readonly;
+    currentRole = role;
+    isReadonly = ROLES[role].readonly;
+    const r = ROLES[role];
+    const isAdmin = !isReadonly;
 
-  // Hide login, show app
-  document.getElementById('loginScreen').style.display = 'none';
-  const app = document.getElementById('app');
-  app.style.display = 'flex';
+    // Hide login, show app
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
 
-  // Apply user info
-  const r = ROLES[role];
-  document.getElementById('userAvatar').textContent = r.icon;
-  document.getElementById('userAvatar').style.background = r.color;
-  document.getElementById('userName').textContent = r.label;
-  document.getElementById('userRoleLbl').textContent = r.readonly ? '只读' : '管理员';
+    // Apply user info
+    const avatarEl = document.getElementById('userAvatar');
+    if (avatarEl) { avatarEl.textContent = r.icon; avatarEl.style.background = r.color; }
+    const nameEl = document.getElementById('userName');
+    if (nameEl) nameEl.textContent = r.label;
+    const roleEl = document.getElementById('userRoleLbl');
+    if (roleEl) roleEl.textContent = r.readonly ? '只读' : '管理员';
 
-  // Readonly badge
-  document.getElementById('readonlyBadge').style.display = isReadonly ? 'inline-flex' : 'none';
+    // Toggle UI elements safely
+    const toggleEl = (id, show, displayVal) => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = show ? (displayVal||'flex') : 'none';
+    };
+    toggleEl('readonlyBadge', isReadonly, 'inline-flex');
+    toggleEl('storagePill', isAdmin, 'flex');
+    toggleEl('adminTools', isAdmin, 'flex');
+    toggleEl('scheduleAdminBtns', isAdmin, 'flex');
+    toggleEl('rcAdminBtns', isAdmin, 'flex');
+    toggleEl('rcImportArea', isAdmin, 'block');
+    toggleEl('rcSaveArea', isAdmin, 'flex');
+    toggleEl('addProjBtn', isAdmin, 'inline-flex');
+    toggleEl('notesAdminBtns', isAdmin, 'flex');
+    toggleEl('uploadMediaBtn', isAdmin, 'inline-flex');
+    toggleEl('uploadFilesBtn', isAdmin, 'inline-flex');
+    toggleEl('memoInputBar', isAdmin, 'flex');
 
-  // Admin-only UI
-  const isAdmin = !isReadonly;
-  document.getElementById('storagePill').style.display = isAdmin ? 'flex' : 'none';
-  document.getElementById('adminTools').style.display = isAdmin ? 'flex' : 'none';
-  document.getElementById('scheduleAdminBtns').style.display = isAdmin ? 'flex' : 'none';
-  document.getElementById('rcAdminBtns').style.display = isAdmin ? 'flex' : 'none';
-  document.getElementById('rcImportArea').style.display = isAdmin ? 'block' : 'none';
-  document.getElementById('rcSaveArea').style.display = isAdmin ? 'flex' : 'none';
-  document.getElementById('addProjBtn').style.display = isAdmin ? 'inline-flex' : 'none';
-  document.getElementById('notesAdminBtns').style.display = isAdmin ? 'flex' : 'none';
-  // newFolderBtn removed in new file center
-  document.getElementById('uploadMediaBtn').style.display = isAdmin ? 'inline-flex' : 'none';
-  const uploadFilesBtn = document.getElementById('uploadFilesBtn');
-  if (uploadFilesBtn) uploadFilesBtn.style.display = isAdmin ? 'inline-flex' : 'none';
-  document.getElementById('memoInputBar').style.display = isAdmin ? 'flex' : 'none';
-  // dropZone removed in new file center design
+    // Class filter for students
+    if (isReadonly && r.classFilter) {
+      calClassFilter = r.classFilter;
+      rollSelectedGroup = r.label;
+    }
 
-  // Apply class filter for students
-  if (isReadonly && ROLES[role].classFilter) {
-    // Auto-apply class filter on calendar
-    const cf = ROLES[role].classFilter;
-    calClassFilter = cf;
-    // Hide rollcall left panel for students (they see their class auto-filtered)
-    rollSelectedGroup = r.label;
+    initApp();
+  } catch(e) {
+    console.error('Login error:', e);
+    showLoginErr('登录出错: ' + e.message);
   }
-
-  // Greet
-  initApp();
 }
 
 function showLoginErr(msg) {
