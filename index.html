@@ -3,7 +3,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>班级工作台 v3.5</title>
 <style>
 /* ============================================================
@@ -466,19 +466,100 @@ body {
 .today-card {
   background: linear-gradient(135deg, var(--accent) 0%, #7c3aed 100%);
   border-radius: var(--radius);
-  padding: 20px;
+  padding: 20px 24px;
   color: #fff;
   margin-bottom: 20px;
   display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
 }
-.today-left { flex: 1; }
+.today-left { flex: 1; min-width: 200px; }
 .today-date { font-size: 13px; opacity: 0.8; margin-bottom: 4px; }
 .today-greeting { font-size: 20px; font-weight: 700; }
 .today-sub { font-size: 13px; opacity: 0.75; margin-top: 4px; }
-.today-stats { display: flex; gap: 20px; }
+.today-stats { display: flex; gap: 20px; flex-wrap: wrap; }
 .today-stat { text-align: center; }
 .today-stat-num { font-size: 24px; font-weight: 700; }
 .today-stat-lbl { font-size: 11px; opacity: 0.75; }
+
+/* Dashboard month picker */
+.dash-month-bar {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 16px; flex-wrap: wrap;
+}
+.dash-month-bar .dmb-title { font-size: 15px; font-weight: 700; flex: 1; }
+.dash-month-nav { display: flex; align-items: center; gap: 6px; }
+.dash-month-nav button {
+  width: 30px; height: 30px; border: 1px solid var(--border);
+  border-radius: var(--radius-xs); background: var(--bg-card);
+  cursor: pointer; font-size: 12px; color: var(--text-secondary);
+  transition: all var(--transition); display: flex; align-items: center; justify-content: center;
+}
+.dash-month-nav button:hover { border-color: var(--accent); color: var(--accent); }
+.dash-month-label {
+  font-size: 14px; font-weight: 600; min-width: 80px; text-align: center;
+  color: var(--text);
+}
+.dash-month-nav .dmn-today {
+  padding: 4px 10px; width: auto; font-size: 12px;
+}
+
+/* Stat cards grid */
+.dash-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px; margin-bottom: 20px;
+}
+.dash-stat-card {
+  background: var(--bg-card); border-radius: var(--radius);
+  border: 1px solid var(--border); padding: 16px;
+  box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
+  transition: box-shadow var(--transition);
+}
+.dash-stat-card:hover { box-shadow: var(--shadow); }
+.dsc-accent { position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: var(--radius) var(--radius) 0 0; }
+.dsc-icon { font-size: 22px; margin-bottom: 8px; display: block; }
+.dsc-value { font-size: 26px; font-weight: 800; line-height: 1; }
+.dsc-label { font-size: 11px; color: var(--text-secondary); margin-top: 3px; }
+.dsc-sub { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
+
+/* Progress ring mini */
+.dsc-ring-wrap { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+.dsc-ring { position: relative; width: 40px; height: 40px; flex-shrink: 0; }
+.dsc-ring svg { transform: rotate(-90deg); }
+.dsc-ring-bg { fill: none; stroke: var(--border); stroke-width: 5; }
+.dsc-ring-fill { fill: none; stroke-width: 5; stroke-linecap: round; transition: stroke-dashoffset 0.6s; }
+.dsc-ring-pct { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; }
+
+/* Memo progress bar */
+.memo-progress-wrap { margin-top: 8px; }
+.memo-progress-track { height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.memo-progress-fill { height: 100%; border-radius: 3px; background: var(--accent); transition: width 0.5s; }
+.memo-pct-row { display: flex; justify-content: space-between; margin-top: 3px; font-size: 10px; color: var(--text-tertiary); }
+
+/* Today summary section */
+.today-summary-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 12px; margin-top: 20px;
+}
+.tsg-card {
+  background: var(--bg-card); border-radius: var(--radius);
+  border: 1px solid var(--border); overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.tsg-head {
+  padding: 10px 14px; border-bottom: 1px solid var(--border-light);
+  font-size: 13px; font-weight: 600;
+  display: flex; align-items: center; gap: 6px;
+}
+.tsg-body { padding: 8px; max-height: 200px; overflow-y: auto; }
+.tsg-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 8px; border-radius: var(--radius-xs);
+  font-size: 12px; transition: background var(--transition);
+}
+.tsg-item:hover { background: var(--bg-hover); }
+.tsg-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.tsg-empty { padding: 16px; text-align: center; color: var(--text-tertiary); font-size: 12px; }
 
 /* ============================================================
    CALENDAR
@@ -1151,6 +1232,131 @@ body {
 .folder-card .fc-count { font-size: 10px; color: var(--text-tertiary); margin-top: 2px; }
 .folder-card .fc-actions { position: absolute; top: 6px; right: 6px; display: flex; gap: 2px; opacity: 0; transition: opacity var(--transition); }
 .folder-card:hover .fc-actions { opacity: 1; }
+
+/* ============================================================
+   MOBILE RESPONSIVE
+============================================================ */
+@media (max-width: 768px) {
+  /* Bottom nav instead of sidebar */
+  .sidebar {
+    position: fixed; bottom: 0; left: 0; right: 0; top: auto;
+    width: 100% !important;
+    height: 60px;
+    flex-direction: row;
+    border-right: none;
+    border-top: 1px solid var(--border);
+    z-index: 100;
+    overflow: visible;
+  }
+  .sidebar-header { display: none; }
+  .sidebar-footer { display: none; }
+  .sidebar-nav {
+    display: flex; flex-direction: row;
+    overflow-x: auto; overflow-y: hidden;
+    padding: 4px 6px;
+    gap: 2px; align-items: center;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .sidebar-nav::-webkit-scrollbar { display: none; }
+  .nav-item {
+    flex-direction: column; gap: 2px;
+    padding: 6px 10px; min-width: 56px;
+    flex-shrink: 0; justify-content: center;
+    font-size: 10px; border-radius: var(--radius-xs);
+  }
+  .nav-item svg { width: 20px; height: 20px; }
+  .nav-label { display: block !important; font-size: 10px; }
+  .sidebar.collapsed .nav-label { display: block !important; }
+  .sidebar.collapsed .nav-item { justify-content: center; padding: 6px 10px; }
+
+  /* Main content above bottom nav */
+  .app-body { flex-direction: column; }
+  .main-content { flex: 1; overflow: hidden; padding-bottom: 60px; }
+  .modules { padding: 12px; }
+
+  /* Topbar compact */
+  .topbar { padding: 0 12px; height: 48px; }
+  .topbar-title { font-size: 14px; }
+  .logout-btn { padding: 4px 8px; font-size: 12px; }
+  .readonly-badge { font-size: 10px; padding: 2px 6px; }
+  .storage-pill { display: none !important; }
+
+  /* Today card */
+  .today-card { padding: 14px 16px; }
+  .today-greeting { font-size: 16px; }
+  .today-stat-num { font-size: 18px; }
+  .today-stats { gap: 12px; }
+
+  /* Dash stat grid */
+  .dash-stat-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .dsc-value { font-size: 20px; }
+
+  /* Today summary grid - stack on mobile */
+  .today-summary-grid { grid-template-columns: 1fr; gap: 8px; }
+
+  /* Calendar */
+  .cal-layout { flex-direction: column; }
+  .cal-months { flex-direction: column; }
+  .cal-month-wrap { min-width: unset; }
+  .cal-class-filter { padding: 6px 10px; }
+
+  /* Roll call */
+  .rc-layout { flex-direction: column; height: auto; }
+  .rc-panel { width: 100%; min-height: 120px; max-height: 180px; }
+  .rc-main { min-height: 300px; }
+  .rc-check-table th, .rc-check-table td { padding: 6px 8px; font-size: 12px; }
+
+  /* Projects */
+  .proj-grid { grid-template-columns: 1fr; }
+  .dash-row { grid-template-columns: 1fr; }
+  .detail-hero { flex-direction: column; gap: 14px; }
+
+  /* Notes */
+  .notes-layout { flex-direction: column; height: auto; }
+  .notes-tree-panel { width: 100%; height: 200px; }
+  .note-editor-panel { min-height: 400px; }
+
+  /* Files */
+  .fc-wrap { flex-direction: column; height: auto; }
+  .fc-class-nav {
+    width: 100%; flex-direction: row; overflow-x: auto;
+    border-right: none; border-bottom: 1px solid var(--border);
+    padding: 6px;
+  }
+  .fc-class-nav-title { display: none; }
+  .fc-class-btn {
+    flex-direction: column; min-width: 64px; padding: 6px 8px;
+    margin: 0 2px; gap: 2px; font-size: 11px;
+    width: auto;
+  }
+  .fc-class-btn .fc-class-icon { font-size: 18px; }
+  .fc-class-btn .fc-class-count { margin: 0; }
+  .fc-content { min-height: 400px; }
+  .fc-file-row { flex-wrap: wrap; gap: 8px; }
+  .fc-file-actions { width: 100%; justify-content: flex-end; }
+
+  /* Media */
+  .media-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+
+  /* Modal */
+  .modal { width: 95vw; max-height: 90vh; border-radius: var(--radius); }
+  .form-row { grid-template-columns: 1fr; }
+
+  /* Gantt / task table */
+  .gantt-wrap { overflow-x: auto; }
+
+  /* FC preview full screen on mobile */
+  .fc-preview-box { width: 100vw; height: 100vh; border-radius: 0; }
+}
+
+@media (max-width: 480px) {
+  .dash-stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .today-stats { gap: 8px; }
+  .today-stat-num { font-size: 16px; }
+  .media-grid { grid-template-columns: repeat(2, 1fr); }
+  .fc-class-btn { min-width: 52px; }
+}
 </style>
 </head>
 <body>
@@ -1219,7 +1425,7 @@ body {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
           <span class="nav-label">日历日程</span>
         </button>
-        <button class="nav-item" data-tab="rollcall" onclick="switchTab(this)">
+        <button class="nav-item" data-tab="rollcall" id="navRollcall" onclick="switchTab(this)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
           <span class="nav-label">点名签到</span>
         </button>
@@ -1288,6 +1494,7 @@ body {
 
         <!-- ======== DASHBOARD ======== -->
         <section class="module active" id="dashboard">
+          <!-- Hero card -->
           <div class="today-card" id="todayCard">
             <div class="today-left">
               <div class="today-date" id="todayDateStr"></div>
@@ -1296,22 +1503,24 @@ body {
             </div>
             <div class="today-stats" id="todayStats"></div>
           </div>
-          <div class="dash-grid" id="dashGrid"></div>
-          <div class="dash-row">
-            <div class="card">
-              <div class="card-header">
-                <span class="card-title">今日日程</span>
-                <span id="dashboardRollDate" style="font-size:12px;color:var(--text-secondary);"></span>
-              </div>
-              <div class="card-body" id="dashboardSchedule"></div>
-            </div>
-            <div class="card">
-              <div class="card-header">
-                <span class="card-title">今日签到</span>
-              </div>
-              <div class="card-body" id="dashboardRollCall"></div>
+
+          <!-- Month picker -->
+          <div class="dash-month-bar">
+            <div class="dmb-title">📊 月度数据</div>
+            <div class="dash-month-nav">
+              <button onclick="changeDashMonth(-1)">◀</button>
+              <span class="dash-month-label" id="dashMonthLabel"></span>
+              <button onclick="changeDashMonth(1)">▶</button>
+              <button class="dmn-today" onclick="resetDashMonth()">本月</button>
             </div>
           </div>
+
+          <!-- Stat cards -->
+          <div class="dash-stat-grid" id="dashStatGrid"></div>
+
+          <!-- Today summary -->
+          <div style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--text-secondary);">📅 今日摘要</div>
+          <div class="today-summary-grid" id="todaySummaryGrid"></div>
         </section>
 
         <!-- ======== SCHEDULE ======== -->
@@ -1648,6 +1857,7 @@ function doLogin() {
     toggleEl('uploadMediaBtn', isAdmin, 'inline-flex');
     toggleEl('uploadFilesBtn', isAdmin, 'inline-flex');
     toggleEl('memoInputBar', isAdmin, 'flex');
+    toggleEl('navRollcall', isAdmin, 'flex');
 
     // Class filter for students
     if (isReadonly && r.classFilter) {
@@ -2004,6 +2214,18 @@ function closeModal(e) {
 // ============================================================
 //  DASHBOARD
 // ============================================================
+let dashMonth = new Date(); // currently viewed month
+
+function changeDashMonth(delta) {
+  dashMonth = new Date(dashMonth.getFullYear(), dashMonth.getMonth() + delta, 1);
+  renderDashboard();
+}
+function resetDashMonth() { dashMonth = new Date(); renderDashboard(); }
+
+function getDashMonthStr() {
+  return dashMonth.getFullYear() + '-' + String(dashMonth.getMonth()+1).padStart(2,'0');
+}
+
 function renderDashboard() {
   const todayStr = today();
   const d = new Date();
@@ -2014,86 +2236,173 @@ function renderDashboard() {
   const roleName = currentRole ? ROLES[currentRole].label : '';
   document.getElementById('todayGreeting').textContent = greet + '，' + roleName + '！';
 
-  const schedules = (DB.data.schedules || []).filter(s => s.date === todayStr);
-  const filteredSchedules = isReadonly ? schedules.filter(s => {
+  // Month label
+  const mlEl = document.getElementById('dashMonthLabel');
+  if (mlEl) mlEl.textContent = dashMonth.getFullYear() + '年' + (dashMonth.getMonth()+1) + '月';
+
+  // Month range
+  const monthStr = getDashMonthStr();
+  const allSchedules = DB.data.schedules || [];
+  const monthSchedules = allSchedules.filter(s => (s.date||'').startsWith(monthStr));
+  const filteredMonthSchedules = isReadonly ? monthSchedules.filter(s => {
     const ec = DB.eventColors.find(c => c.key === s.type);
     return !ec || ec.classScope === 'all' || ec.classScope === ROLES[currentRole]?.classFilter;
-  }) : schedules;
-  const memos = (DB.data.memos || []).filter(m => !m.done);
-  document.getElementById('todaySub').textContent = `今天有 ${filteredSchedules.length} 个日程，${memos.length} 个待办`;
+  }) : monthSchedules;
 
-  // Stats
-  document.getElementById('todayStats').innerHTML = `
-    <div class="today-stat"><div class="today-stat-num">${filteredSchedules.length}</div><div class="today-stat-lbl">日程</div></div>
-    <div class="today-stat"><div class="today-stat-num">${memos.length}</div><div class="today-stat-lbl">待办</div></div>
-    <div class="today-stat"><div class="today-stat-num">${(DB.data.projects||[]).length}</div><div class="today-stat-lbl">项目</div></div>
-  `;
+  const memos = DB.data.memos || [];
+  const memoDone = memos.filter(m => m.done).length;
+  const memoTotal = memos.length;
+  const memoPct = memoTotal ? Math.round(memoDone / memoTotal * 100) : 0;
 
-  // Stat cards
+  const projects = DB.data.projects || [];
+  const projPcts = projects.map(p => projProg(p));
+  const avgProjPct = projPcts.length ? Math.round(projPcts.reduce((a,b)=>a+b,0)/projPcts.length) : 0;
+
+  const filesMonth = (DB.data.filesIndex || []).filter(f => (f.date||'').startsWith(monthStr));
+  const mediaMonth = (DB.data.media || []).filter(m => (m.date||'').startsWith(monthStr));
+
+  // Rollcall stats for month
+  const rc = DB.data.rollcall || {};
   const people = DB.data.people || [];
-  const rc = (DB.data.rollcall || {})[todayStr] || {};
-  const present = people.filter(p => rc[p.id]?.status === 'present').length;
-  document.getElementById('dashGrid').innerHTML = `
-    <div class="stat-card blue"><div class="stat-icon">📅</div><div class="stat-value">${filteredSchedules.length}</div><div class="stat-label">今日日程</div></div>
-    <div class="stat-card green"><div class="stat-icon">✅</div><div class="stat-value">${present}</div><div class="stat-label">今日签到</div></div>
-    <div class="stat-card orange"><div class="stat-icon">📋</div><div class="stat-value">${memos.length}</div><div class="stat-label">待办事项</div></div>
-    <div class="stat-card purple"><div class="stat-icon">🗂️</div><div class="stat-value">${(DB.data.projects||[]).length}</div><div class="stat-label">进行项目</div></div>
-  `;
+  const monthDays = Object.keys(rc).filter(d => d.startsWith(monthStr));
+  let monthPresent = 0, monthAbsent = 0, monthLate = 0;
+  monthDays.forEach(day => {
+    people.forEach(p => {
+      const r = rc[day]?.[p.id];
+      if (r?.status === 'present') monthPresent++;
+      else if (r?.status === 'absent') monthAbsent++;
+      else if (r?.status === 'late') monthLate++;
+    });
+  });
 
-  // Today's schedules
-  document.getElementById('dashboardRollDate').textContent = todayStr;
-  if (!filteredSchedules.length) {
-    document.getElementById('dashboardSchedule').innerHTML = '<div class="empty-state" style="padding:20px;">今天暂无日程</div>';
-  } else {
-    document.getElementById('dashboardSchedule').innerHTML = filteredSchedules.slice(0,5).map(s => {
-      const c = DB.eventColors.find(ec => ec.key === s.type) || DB.eventColors[0];
-      return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-light);">
-        <div style="width:4px;height:36px;border-radius:2px;background:${c.color};flex-shrink:0;"></div>
-        <div>
-          <div style="font-size:13px;font-weight:500;">${escapeHtml(s.title)}</div>
-          <div style="font-size:11px;color:var(--text-tertiary);">${s.start||'全天'}${s.end?' - '+s.end:''} · ${c.label}</div>
-        </div>
-      </div>`;
+  // Hero today stats
+  const todaySchedules = allSchedules.filter(s => s.date === todayStr);
+  document.getElementById('todaySub').textContent =
+    '本月 ' + filteredMonthSchedules.length + ' 个日程 · ' + (memoTotal - memoDone) + ' 个待办';
+  document.getElementById('todayStats').innerHTML =
+    '<div class="today-stat"><div class="today-stat-num">' + filteredMonthSchedules.length + '</div><div class="today-stat-lbl">本月日程</div></div>' +
+    '<div class="today-stat"><div class="today-stat-num">' + (memoTotal - memoDone) + '</div><div class="today-stat-lbl">待办事项</div></div>' +
+    '<div class="today-stat"><div class="today-stat-num">' + projects.length + '</div><div class="today-stat-lbl">进行项目</div></div>';
+
+  // ── Stat cards ──────────────────────────────────────────
+  const circ = 2 * Math.PI * 14;
+  const ring = (pct, color) => {
+    const offset = circ * (1 - pct/100);
+    return '<div class="dsc-ring"><svg width="40" height="40" viewBox="0 0 40 40">' +
+      '<circle class="dsc-ring-bg" cx="20" cy="20" r="14"/>' +
+      '<circle class="dsc-ring-fill" cx="20" cy="20" r="14" stroke="' + color + '" stroke-dasharray="' + circ.toFixed(1) + '" stroke-dashoffset="' + offset.toFixed(1) + '"/>' +
+      '</svg><div class="dsc-ring-pct">' + pct + '%</div></div>';
+  };
+
+  const cards = [
+    // Month schedules
+    { color:'#4f6ef7', icon:'📅', value: filteredMonthSchedules.length, label:'本月日程', sub: monthDays.length + ' 天有活动' },
+    // Memo stats
+    { color:'#22c55e', icon:'✅', custom: true, render: () =>
+      '<span class="dsc-icon">✅</span>' +
+      '<div class="dsc-value">' + memoDone + '<span style="font-size:14px;color:var(--text-tertiary);">/' + memoTotal + '</span></div>' +
+      '<div class="dsc-label">备忘完成</div>' +
+      '<div class="memo-progress-wrap"><div class="memo-progress-track"><div class="memo-progress-fill" style="width:' + memoPct + '%"></div></div>' +
+      '<div class="memo-pct-row"><span>待办 ' + (memoTotal-memoDone) + '</span><span>' + memoPct + '%</span></div></div>'
+    },
+    // Projects
+    { color:'#f97316', icon:'🗂️', custom: true, render: () =>
+      '<span class="dsc-icon">🗂️</span>' +
+      '<div class="dsc-ring-wrap">' + ring(avgProjPct,'#f97316') +
+      '<div><div class="dsc-value" style="font-size:20px;">' + avgProjPct + '%</div>' +
+      '<div class="dsc-label">项目均进度</div>' +
+      '<div class="dsc-sub">' + projects.length + ' 个项目</div></div></div>'
+    },
+    // Files this month
+    { color:'#14b8a6', icon:'📁', value: filesMonth.length, label:'本月上传', sub: fmtSize(filesMonth.reduce((s,f)=>s+(f.size||0),0)) },
+  ];
+
+  if (!isReadonly) {
+    // Rollcall month stats (admin only)
+    cards.push({ color:'#a855f7', icon:'📋', custom: true, render: () =>
+      '<span class="dsc-icon">📋</span>' +
+      '<div class="dsc-value">' + monthPresent + '</div>' +
+      '<div class="dsc-label">本月签到人次</div>' +
+      '<div class="dsc-sub">缺席 ' + monthAbsent + ' · 迟到 ' + monthLate + '</div>'
+    });
+  }
+  // Media
+  cards.push({ color:'#ec4899', icon:'🖼️', value: mediaMonth.length, label:'本月媒体', sub: '共 ' + (DB.data.media||[]).length + ' 个' });
+
+  const grid = document.getElementById('dashStatGrid');
+  if (grid) {
+    grid.innerHTML = cards.map(c => {
+      const accentBar = '<div class="dsc-accent" style="background:' + c.color + ';"></div>';
+      if (c.custom) return '<div class="dash-stat-card">' + accentBar + c.render() + '</div>';
+      return '<div class="dash-stat-card">' + accentBar +
+        '<span class="dsc-icon">' + c.icon + '</span>' +
+        '<div class="dsc-value">' + c.value + '</div>' +
+        '<div class="dsc-label">' + c.label + '</div>' +
+        '<div class="dsc-sub">' + (c.sub||'') + '</div>' +
+        '</div>';
     }).join('');
   }
 
-  renderDashboardRollCall();
-}
+  // ── Today summary ────────────────────────────────────────
+  const todayFiltered = isReadonly ? todaySchedules.filter(s => {
+    const ec = DB.eventColors.find(c => c.key === s.type);
+    return !ec || ec.classScope === 'all' || ec.classScope === ROLES[currentRole]?.classFilter;
+  }) : todaySchedules;
+  const todayMemos = memos.filter(m => !m.done);
+  const todayRc = rc[todayStr] || {};
+  const todayPresent = people.filter(p => todayRc[p.id]?.status === 'present').length;
+  const todayAbsent  = people.filter(p => todayRc[p.id]?.status === 'absent').length;
+  const todayLate    = people.filter(p => todayRc[p.id]?.status === 'late').length;
 
-function renderDashboardRollCall() {
-  const rc = DB.data.rollcall || {};
-  const todayStr = today();
-  const records = rc[todayStr] || {};
-  const people = DB.data.people || [];
-  if (!people.length) {
-    document.getElementById('dashboardRollCall').innerHTML = '<div class="empty-state" style="padding:20px;">暂无人员数据</div>';
-    return;
+  const sg = document.getElementById('todaySummaryGrid');
+  if (!sg) return;
+
+  // Col 1: today schedules
+  let schHtml = '<div class="tsg-card"><div class="tsg-head">📅 今日日程 <span style="font-size:11px;color:var(--text-tertiary);margin-left:auto;">' + todayFiltered.length + ' 条</span></div><div class="tsg-body">';
+  if (!todayFiltered.length) schHtml += '<div class="tsg-empty">今日无日程</div>';
+  else todayFiltered.sort((a,b)=>(a.start||'').localeCompare(b.start||'')).forEach(s => {
+    const ec = DB.eventColors.find(c=>c.key===s.type)||DB.eventColors[0];
+    schHtml += '<div class="tsg-item"><div class="tsg-dot" style="background:' + ec.color + '"></div>' +
+      '<div><div style="font-weight:500;">' + escapeHtml(s.title) + '</div>' +
+      '<div style="color:var(--text-tertiary);font-size:10px;">' + (s.start||'全天') + (s.end?' - '+s.end:'') + '</div></div></div>';
+  });
+  schHtml += '</div></div>';
+
+  // Col 2: today memos
+  let memoHtml = '<div class="tsg-card"><div class="tsg-head">📋 待办事项 <span style="font-size:11px;color:var(--text-tertiary);margin-left:auto;">' + todayMemos.length + ' 条</span></div><div class="tsg-body">';
+  if (!todayMemos.length) memoHtml += '<div class="tsg-empty">暂无待办</div>';
+  else todayMemos.slice(0,6).forEach(m => {
+    const pc = {high:'#ef4444',medium:'#f97316',low:'#22c55e'}[m.priority||'medium'];
+    memoHtml += '<div class="tsg-item"><div class="tsg-dot" style="background:' + pc + '"></div>' +
+      '<div style="font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px;">' + escapeHtml(m.text) + '</div></div>';
+  });
+  if (todayMemos.length > 6) memoHtml += '<div class="tsg-empty">还有 ' + (todayMemos.length-6) + ' 条…</div>';
+  memoHtml += '</div></div>';
+
+  // Col 3: today rollcall (admin) or checkin summary (student)
+  let rcHtml = '<div class="tsg-card"><div class="tsg-head">✅ 今日签到';
+  if (!isReadonly) {
+    rcHtml += ' <span style="font-size:11px;color:var(--text-tertiary);margin-left:auto;">' + people.length + ' 人</span></div><div class="tsg-body">';
+    rcHtml += '<div style="display:flex;gap:8px;padding:8px;flex-wrap:wrap;">' +
+      '<div style="flex:1;text-align:center;padding:10px;background:rgba(34,197,94,0.08);border-radius:8px;border:1px solid rgba(34,197,94,0.2);">' +
+        '<div style="font-size:20px;font-weight:700;color:var(--green);">' + todayPresent + '</div>' +
+        '<div style="font-size:10px;color:var(--text-secondary);">已到</div></div>' +
+      '<div style="flex:1;text-align:center;padding:10px;background:rgba(239,68,68,0.08);border-radius:8px;border:1px solid rgba(239,68,68,0.2);">' +
+        '<div style="font-size:20px;font-weight:700;color:var(--red);">' + todayAbsent + '</div>' +
+        '<div style="font-size:10px;color:var(--text-secondary);">缺席</div></div>' +
+      '<div style="flex:1;text-align:center;padding:10px;background:rgba(249,115,22,0.08);border-radius:8px;border:1px solid rgba(249,115,22,0.2);">' +
+        '<div style="font-size:20px;font-weight:700;color:var(--orange);">' + todayLate + '</div>' +
+        '<div style="font-size:10px;color:var(--text-secondary);">迟到</div></div>' +
+      '</div>';
+  } else {
+    rcHtml += '</div><div class="tsg-body"><div class="tsg-empty">签到数据由管理员维护</div>';
   }
-  const present = people.filter(p => records[p.id]?.status === 'present').length;
-  const absent = people.filter(p => records[p.id]?.status === 'absent').length;
-  const late = people.filter(p => records[p.id]?.status === 'late').length;
-  const unknown = people.length - present - absent - late;
-  document.getElementById('dashboardRollCall').innerHTML = `
-    <div style="display:flex;gap:12px;flex-wrap:wrap;">
-      <div style="flex:1;text-align:center;padding:14px;background:rgba(34,197,94,0.08);border-radius:var(--radius-sm);border:1px solid rgba(34,197,94,0.2);">
-        <div style="font-size:26px;font-weight:700;color:var(--green);">${present}</div>
-        <div style="font-size:11px;color:var(--text-secondary);">已到</div>
-      </div>
-      <div style="flex:1;text-align:center;padding:14px;background:rgba(239,68,68,0.08);border-radius:var(--radius-sm);border:1px solid rgba(239,68,68,0.2);">
-        <div style="font-size:26px;font-weight:700;color:var(--red);">${absent}</div>
-        <div style="font-size:11px;color:var(--text-secondary);">缺席</div>
-      </div>
-      <div style="flex:1;text-align:center;padding:14px;background:rgba(249,115,22,0.08);border-radius:var(--radius-sm);border:1px solid rgba(249,115,22,0.2);">
-        <div style="font-size:26px;font-weight:700;color:var(--orange);">${late}</div>
-        <div style="font-size:11px;color:var(--text-secondary);">迟到</div>
-      </div>
-      <div style="flex:1;text-align:center;padding:14px;background:var(--bg-hover);border-radius:var(--radius-sm);border:1px solid var(--border);">
-        <div style="font-size:26px;font-weight:700;color:var(--text-tertiary);">${unknown}</div>
-        <div style="font-size:11px;color:var(--text-secondary);">未记录</div>
-      </div>
-    </div>`;
+  rcHtml += '</div></div>';
+
+  sg.innerHTML = schHtml + memoHtml + rcHtml;
 }
 
+function renderDashboardRollCall() { renderDashboard(); }
 // ============================================================
 //  CALENDAR
 // ============================================================
