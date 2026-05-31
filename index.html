@@ -3150,7 +3150,7 @@ function renderFiles() {
   if (!files.length) {
     list.innerHTML = '<div class="fc-empty"><div class="fc-empty-icon">📭</div><p>' +
       (DB.dirHandle || true ? '该分类暂无文件' : '请先连接存储') + '</p>' +
-      (isReadonly ? '' : '<button class="fc-action-btn primary" onclick="document.getElementById('fileInput').click()">＋ 上传文件</button>') +
+      (isReadonly ? '' : '<button class="fc-action-btn primary" onclick="document.getElementById(&quot;fileInput&quot;).click()">＋ 上传文件</button>') +
       '</div>';
     return;
   }
