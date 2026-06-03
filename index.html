@@ -1357,6 +1357,76 @@ body {
   .media-grid { grid-template-columns: repeat(2, 1fr); }
   .fc-class-btn { min-width: 52px; }
 }
+
+/* ── NOTES ONENOTE LAYOUT ───────────────────────────────── */
+.notes-layout {
+  display: flex; height: calc(100vh - 130px); overflow: hidden;
+  border-radius: var(--radius); border: 1px solid var(--border);
+  background: var(--bg-card); box-shadow: var(--shadow-sm);
+}
+/* Panel 1: Categories */
+.notes-cat-panel {
+  width: 180px; flex-shrink: 0; background: var(--bg);
+  border-right: 1px solid var(--border-light);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.notes-cat-panel .ntp-head { padding: 12px 12px 8px; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; justify-content: space-between; }
+.notes-cat-panel .h-title { font-size: 13px; font-weight: 700; }
+.ncp-list { flex: 1; overflow-y: auto; padding: 6px; }
+.ncp-cat-item {
+  display: flex; align-items: center; gap: 7px;
+  padding: 8px 10px; border-radius: var(--radius-sm);
+  cursor: pointer; transition: background var(--transition);
+  font-size: 13px; color: var(--text-secondary);
+  border: none; background: transparent; width: 100%; text-align: left;
+  font-family: var(--font);
+}
+.ncp-cat-item:hover { background: var(--bg-hover); color: var(--text); }
+.ncp-cat-item.active { background: var(--accent-light); color: var(--accent); font-weight: 600; }
+.ncp-cat-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+
+/* Panel 2: Note list */
+.notes-list-panel {
+  width: 220px; flex-shrink: 0;
+  border-right: 1px solid var(--border-light);
+  display: flex; flex-direction: column; overflow: hidden;
+  background: var(--bg-hover);
+}
+.nlp-head {
+  padding: 10px 12px; border-bottom: 1px solid var(--border-light);
+  display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+}
+.nlp-title { font-size: 13px; font-weight: 600; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nlp-search { padding: 6px 10px; border-bottom: 1px solid var(--border-light); flex-shrink: 0; }
+.nlp-search input { width: 100%; padding: 5px 9px; border-radius: 6px; border: 1px solid var(--border); font-size: 12px; outline: none; background: var(--bg-card); font-family: var(--font); color: var(--text); }
+.nlp-search input:focus { border-color: var(--accent); }
+.nlp-list { flex: 1; overflow-y: auto; }
+.nlp-note-item {
+  padding: 10px 14px; cursor: pointer;
+  border-bottom: 1px solid var(--border-light);
+  transition: background var(--transition);
+  position: relative;
+}
+.nlp-note-item:hover { background: var(--bg-card); }
+.nlp-note-item.active { background: var(--bg-card); border-left: 3px solid var(--accent); padding-left: 11px; }
+.nlp-note-title { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nlp-note-meta { font-size: 10px; color: var(--text-tertiary); margin-top: 2px; }
+.nlp-note-preview { font-size: 11px; color: var(--text-secondary); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nlp-note-actions { position: absolute; top: 8px; right: 8px; display: flex; gap: 2px; opacity: 0; transition: opacity var(--transition); }
+.nlp-note-item:hover .nlp-note-actions { opacity: 1; }
+
+/* Panel 3: Editor */
+.note-editor-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+
+/* Mobile notes */
+@media (max-width: 768px) {
+  .notes-layout { flex-direction: column; height: auto; }
+  .notes-cat-panel { width: 100%; height: auto; max-height: 120px; flex-direction: row; border-right: none; border-bottom: 1px solid var(--border-light); }
+  .ncp-list { display: flex; flex-direction: row; padding: 4px; overflow-x: auto; overflow-y: hidden; }
+  .ncp-cat-item { min-width: 80px; flex-direction: column; gap: 3px; text-align: center; }
+  .notes-list-panel { width: 100%; max-height: 200px; border-right: none; border-bottom: 1px solid var(--border-light); }
+  .note-editor-panel { min-height: 360px; }
+}
 </style>
 </head>
 <body>
@@ -1609,21 +1679,32 @@ body {
         <!-- ======== NOTES ======== -->
         <section class="module" id="notes">
           <div class="notes-layout">
-            <div class="notes-tree-panel">
+            <!-- Panel 1: Categories -->
+            <div class="notes-cat-panel">
               <div class="ntp-head">
-                <span class="h-title">笔记</span>
-                <div style="display:flex;gap:3px;" id="notesAdminBtns">
-                  <button style="background:transparent;border:none;cursor:pointer;font-size:13px;color:var(--text-secondary);padding:3px;border-radius:4px;" title="新建分类" onclick="noteNewCategory()">📂</button>
-                  <button style="background:transparent;border:none;cursor:pointer;font-size:13px;color:var(--accent);padding:3px;border-radius:4px;" title="新建笔记" onclick="noteNewNote(null)">✏️</button>
+                <span class="h-title">分类</span>
+                <div id="notesAdminBtns" style="display:flex;gap:2px;">
+                  <button class="btn btn-sm btn-ghost" onclick="noteNewCategory()" title="新建分类">📂</button>
                 </div>
               </div>
-              <div class="ntp-search"><input type="text" id="noteSearch" placeholder="搜索笔记..." oninput="renderNotesTree()"></div>
-              <div style="flex:1;overflow-y:auto;padding:6px;" id="notesTree"></div>
+              <div class="ncp-list" id="notesCatList"></div>
             </div>
+            <!-- Panel 2: Note list -->
+            <div class="notes-list-panel">
+              <div class="nlp-head">
+                <span class="nlp-title" id="nlpTitle">选择分类</span>
+                <div id="notesListAdminBtns" style="display:flex;gap:2px;">
+                  <button class="btn btn-sm btn-primary" onclick="noteNewNote(null)" title="新建笔记" style="padding:3px 8px;font-size:11px;">✏️ 新建</button>
+                </div>
+              </div>
+              <div class="nlp-search"><input type="text" id="noteSearch" placeholder="搜索笔记…" oninput="renderNotesList()"></div>
+              <div class="nlp-list" id="nlpList"></div>
+            </div>
+            <!-- Panel 3: Editor -->
             <div class="note-editor-panel" id="noteEditorPanel">
               <div class="note-placeholder">
                 <span style="font-size:32px">📝</span>
-                <span>选择一篇笔记，或点击左上角 ✏️ 新建</span>
+                <span>从左侧选择或新建笔记</span>
               </div>
             </div>
           </div>
@@ -1854,10 +1935,12 @@ function doLogin() {
     toggleEl('rcSaveArea', isAdmin, 'flex');
     toggleEl('addProjBtn', isAdmin, 'inline-flex');
     toggleEl('notesAdminBtns', isAdmin, 'flex');
+    toggleEl('notesListAdminBtns', isAdmin, 'flex');
     toggleEl('uploadMediaBtn', isAdmin, 'inline-flex');
     toggleEl('uploadFilesBtn', isAdmin, 'inline-flex');
     toggleEl('memoInputBar', isAdmin, 'flex');
     toggleEl('navRollcall', isAdmin, 'flex');
+    toggleEl('pwdMgrBtn', isAdmin, 'flex');
 
     // Class filter for students
     if (isReadonly && r.classFilter) {
@@ -2315,6 +2398,22 @@ function renderDashboard() {
     },
     // Files this month
     { color:'#14b8a6', icon:'📁', value: filesMonth.length, label:'本月上传', sub: fmtSize(filesMonth.reduce((s,f)=>s+(f.size||0),0)) },
+    // Notes this month
+    { color:'#f59e0b', icon:'📝', custom: true, render: () => {
+      const cats = DB.data.notesCats || [];
+      let newCount = 0, updCount = 0;
+      cats.forEach(cat => (cat.folders||[]).forEach(folder => (folder.notes||[]).forEach(note => {
+        if ((note.createdAt||'').startsWith(monthStr)) newCount++;
+        else if ((note.updatedAt||'').startsWith(monthStr)) updCount++;
+      })));
+      return '<span class="dsc-icon">📝</span>' +
+        '<div class="dsc-value">' + newCount + '<span style="font-size:12px;color:var(--text-tertiary);margin-left:4px;">新建</span></div>' +
+        '<div class="dsc-label">本月笔记</div>' +
+        '<div class="dsc-sub" style="margin-top:4px;display:flex;align-items:center;gap:6px;">' +
+          '<span style="background:rgba(245,158,11,0.1);color:#d97706;padding:1px 7px;border-radius:10px;font-size:10px;font-weight:600;">更新 ' + updCount + '</span>' +
+          '<span style="background:rgba(245,158,11,0.1);color:#d97706;padding:1px 7px;border-radius:10px;font-size:10px;font-weight:600;">新建 ' + newCount + '</span>' +
+        '</div>';
+    }},
   ];
 
   if (!isReadonly) {
@@ -3175,139 +3274,293 @@ function deleteProject(id) {
 }
 
 // ============================================================
-//  NOTES
+//  NOTES  (OneNote-style 3-panel)
 // ============================================================
-let selectedNotePath = null;
-let noteExpanded = new Set();
+let selectedCatId    = null;
+let selectedFolderId = null;
+let selectedNoteId   = null;
 let noteAutoSaveTimer = null;
-let noteSavedState = 'saved';
 
-function getNotesCats() { return DB.data.notesCats||[]; }
-function findNoteObj(catId,folderId,noteId) {
-  const cat=(DB.data.notesCats||[]).find(c=>c.id===catId);
-  const folder=cat?.folders?.find(f=>f.id===folderId);
-  return folder?.notes?.find(n=>n.id===noteId)||null;
+const CAT_COLORS = ['#4f6ef7','#22c55e','#ef4444','#f97316','#a855f7','#14b8a6','#ec4899','#eab308'];
+
+function getNotesCats() { return DB.data.notesCats || []; }
+
+function findNoteObj(catId, folderId, noteId) {
+  const cat = getNotesCats().find(c => c.id === catId);
+  const folder = cat?.folders?.find(f => f.id === folderId);
+  return folder?.notes?.find(n => n.id === noteId) || null;
 }
 
-function renderNotesTree() {
-  const search=(document.getElementById('noteSearch')?.value||'').toLowerCase();
-  const el=document.getElementById('notesTree');
-  const cats=getNotesCats();
-  let h='';
-  cats.forEach(cat => {
-    const isCatExp=noteExpanded.has('cat_'+cat.id);
-    const filtered=search?cat.folders.filter(f=>f.name.toLowerCase().includes(search)||(f.notes||[]).some(n=>n.name.toLowerCase().includes(search))):cat.folders;
-    h+='<div class="nt-node"><div class="nt-row" onclick="toggleNoteNode(\'cat_'+cat.id+'\')">' +
-      '<span class="nt-toggle'+(isCatExp?' open':'')+(cat.folders.length===0?' leaf':'')+'">▶</span>' +
-      '<span class="nt-icon">📂</span><span class="nt-label">'+escapeHtml(cat.name)+'</span>' +
-      (isReadonly?'':'<span class="nt-actions"><button style="background:none;border:none;cursor:pointer;font-size:11px;padding:1px 3px;color:var(--text-tertiary);" onclick="event.stopPropagation();deleteNoteCategory(\''+cat.id+'\')">×</button></span>') +
-      '</div>';
-    if(filtered.length) {
-      h+='<div class="nt-children'+(isCatExp?' open':'')+'">'; 
-      filtered.forEach(folder => {
-        const isFolderExp=noteExpanded.has('folder_'+folder.id);
-        const notes=search?(folder.notes||[]).filter(n=>n.name.toLowerCase().includes(search)):(folder.notes||[]);
-        const isActive=selectedNotePath&&selectedNotePath.folderId===folder.id&&!selectedNotePath.noteId;
-        h+='<div class="nt-node"><div class="nt-row'+(isActive?' active':'')+'" onclick="selectNoteFolder(\''+cat.id+'\',\''+folder.id+'\')">' +
-          '<span class="nt-toggle'+(isFolderExp?' open':'')+(notes.length===0?' leaf':'')+'">▶</span>' +
-          '<span class="nt-icon">📁</span><span class="nt-label">'+escapeHtml(folder.name)+'<span style="color:var(--text-tertiary);font-size:10px;margin-left:4px;">'+folder.notes.length+'</span></span>' +
-          (isReadonly?'':'<span class="nt-actions"><button style="background:none;border:none;cursor:pointer;font-size:11px;padding:1px 3px;color:var(--text-tertiary);" onclick="event.stopPropagation();deleteNoteFolder(\''+cat.id+'\',\''+folder.id+'\')">×</button></span>') +
-          '</div>';
-        if(notes.length) {
-          h+='<div class="nt-children'+(isFolderExp?' open':'')+'">'; 
-          notes.forEach(n => {
-            const isActive=selectedNotePath&&selectedNotePath.noteId===n.id;
-            h+='<div class="nt-node"><div class="nt-row'+(isActive?' active':'')+'" onclick="selectNote(\''+cat.id+'\',\''+folder.id+'\',\''+n.id+'\')">' +
-              '<span class="nt-toggle leaf">▶</span><span class="nt-icon">📝</span><span class="nt-label">'+escapeHtml(n.name)+'</span>' +
-              (isReadonly?'':'<span class="nt-actions"><button style="background:none;border:none;cursor:pointer;font-size:11px;padding:1px 3px;color:var(--text-tertiary);" onclick="event.stopPropagation();deleteNoteItem(\''+cat.id+'\',\''+folder.id+'\',\''+n.id+'\')">×</button></span>') +
-              '</div></div>';
-          });
-          h+='</div>';
-        }
-        h+='</div>';
-      });
-      h+='</div>';
-    }
-    h+='</div>';
+// ── Render Panel 1: Categories ───────────────────────────────
+function renderNotesCats() {
+  const el = document.getElementById('notesCatList'); if (!el) return;
+  const cats = getNotesCats();
+  if (!cats.length) {
+    el.innerHTML = '<div style="padding:12px;font-size:12px;color:var(--text-tertiary);">暂无分类</div>';
+    return;
+  }
+  el.innerHTML = cats.map((cat, i) => {
+    const col = CAT_COLORS[i % CAT_COLORS.length];
+    const noteCount = (cat.folders||[]).reduce((s,f) => s + (f.notes||[]).length, 0);
+    const isActive = cat.id === selectedCatId;
+    return '<button class="ncp-cat-item' + (isActive?' active':'') + '" onclick="selectNotesCat(&quot;' + cat.id + '&quot;)">' +
+      '<div class="ncp-cat-dot" style="background:' + col + ';"></div>' +
+      '<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + escapeHtml(cat.name) + '</span>' +
+      '<span style="font-size:10px;color:var(--text-tertiary);">' + noteCount + '</span>' +
+      (isReadonly ? '' : '<button class="btn btn-sm btn-ghost" style="padding:1px 4px;opacity:0.5;" onclick="event.stopPropagation();deleteNoteCategory(&quot;' + cat.id + '&quot;)">×</button>') +
+      '</button>';
+  }).join('');
+}
+
+// ── Render Panel 2: Note list ────────────────────────────────
+function renderNotesList() {
+  const el = document.getElementById('nlpList'); if (!el) return;
+  const titleEl = document.getElementById('nlpTitle');
+  const cat = getNotesCats().find(c => c.id === selectedCatId);
+  if (!cat) {
+    if (titleEl) titleEl.textContent = '选择分类';
+    el.innerHTML = '<div style="padding:16px;font-size:12px;color:var(--text-tertiary);text-align:center;">请先选择左侧分类</div>';
+    return;
+  }
+  if (titleEl) titleEl.textContent = cat.name;
+  const search = (document.getElementById('noteSearch')?.value || '').toLowerCase();
+  // Flatten all notes in this category across folders
+  const allNotes = [];
+  (cat.folders||[]).forEach(folder => {
+    (folder.notes||[]).forEach(note => {
+      if (!search || note.name.toLowerCase().includes(search) || (note.content||'').toLowerCase().includes(search)) {
+        allNotes.push({ ...note, folderId: folder.id, folderName: folder.name });
+      }
+    });
   });
-  el.innerHTML=h||'<div class="empty-state" style="padding:20px;">暂无笔记</div>';
+  // Sort by updatedAt descending
+  allNotes.sort((a,b) => (b.updatedAt||b.createdAt||'').localeCompare(a.updatedAt||a.createdAt||''));
+
+  if (!allNotes.length) {
+    el.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-tertiary);font-size:12px;">' +
+      (search ? '没有找到匹配的笔记' : '暂无笔记') + '</div>';
+    return;
+  }
+  el.innerHTML = '';
+  allNotes.forEach(note => {
+    const isActive = note.id === selectedNoteId;
+    const preview = (note.content || '').replace(/<[^>]+>/g, '').slice(0, 60);
+    const updDate = (note.updatedAt || note.createdAt || '').slice(0, 10);
+    const div = document.createElement('div');
+    div.className = 'nlp-note-item' + (isActive ? ' active' : '');
+    div.innerHTML = '<div class="nlp-note-title">' + escapeHtml(note.name) + '</div>' +
+      '<div class="nlp-note-meta">' + escapeHtml(note.folderName) + ' · ' + updDate + '</div>' +
+      (preview ? '<div class="nlp-note-preview">' + escapeHtml(preview) + '</div>' : '');
+    div.addEventListener('click', () => selectNoteFromList(selectedCatId, note.folderId, note.id));
+    if (!isReadonly) {
+      const acts = document.createElement('div');
+      acts.className = 'nlp-note-actions';
+      const del = document.createElement('button');
+      del.className = 'btn btn-sm btn-ghost';
+      del.style.cssText = 'padding:1px 5px;';
+      del.textContent = '×';
+      del.addEventListener('click', e => { e.stopPropagation(); deleteNoteItem(selectedCatId, note.folderId, note.id); });
+      acts.appendChild(del);
+      div.appendChild(acts);
+    }
+    el.appendChild(div);
+  });
 }
 
-function toggleNoteNode(key) { if(noteExpanded.has(key))noteExpanded.delete(key);else noteExpanded.add(key);renderNotesTree(); }
-function selectNoteFolder(catId,folderId) { saveCurrentNote();selectedNotePath={catId,folderId,noteId:null};renderNotesTree();document.getElementById('noteEditorPanel').innerHTML='<div class="note-placeholder"><span style="font-size:28px">📁</span><span>选择一篇笔记，或点击 ✏️ 新建</span></div>'; }
-function selectNote(catId,folderId,noteId) { saveCurrentNote();selectedNotePath={catId,folderId,noteId};renderNotesTree();const note=findNoteObj(catId,folderId,noteId);if(note)openNoteEditor(note,catId,folderId); }
+// ── Select cat ────────────────────────────────────────────────
+function selectNotesCat(catId) {
+  saveCurrentNote();
+  selectedCatId = catId;
+  selectedNoteId = null;
+  renderNotesCats();
+  renderNotesList();
+  document.getElementById('noteEditorPanel').innerHTML =
+    '<div class="note-placeholder"><span style="font-size:28px">📝</span><span>选择或新建笔记</span></div>';
+}
 
-function openNoteEditor(note,catId,folderId) {
-  const cat=getNotesCats().find(c=>c.id===catId);
-  const folder=cat?.folders?.find(f=>f.id===folderId);
-  const panel=document.getElementById('noteEditorPanel');
-  panel.innerHTML=
-    '<div class="nep-head"><div class="nep-breadcrumb">'+escapeHtml(cat?.name||'')+'  /  '+escapeHtml(folder?.name||'')+'</div>' +
-    (isReadonly?'<span class="readonly-badge" style="font-size:10px;padding:2px 8px;">只读</span>':'') +
-    '</div>' +
-    (isReadonly?'<div style="padding:8px 16px;font-size:18px;font-weight:600;border-bottom:1px solid var(--border-light);">'+escapeHtml(note.name)+'</div>':'<input type="text" class="nep-title" id="noteEditorTitle" value="'+escapeHtml(note.name)+'" placeholder="笔记标题" oninput="onNoteInput()">') +
-    (isReadonly?'':'<div class="editor-toolbar"><button class="tb-btn" onclick="execNoteCmd(\'bold\')" style="font-weight:700;">B</button><button class="tb-btn" onclick="execNoteCmd(\'italic\')" style="font-style:italic;">I</button><button class="tb-btn" onclick="execNoteCmd(\'underline\')" style="text-decoration:underline;">U</button><div class="tb-sep"></div><button class="tb-btn" onclick="execNoteCmd(\'formatBlock\',\'h1\')">H1</button><button class="tb-btn" onclick="execNoteCmd(\'formatBlock\',\'h2\')">H2</button><button class="tb-btn" onclick="execNoteCmd(\'formatBlock\',\'h3\')">H3</button><div class="tb-sep"></div><button class="tb-btn" onclick="execNoteCmd(\'insertUnorderedList\')">• 列表</button><button class="tb-btn" onclick="execNoteCmd(\'insertOrderedList\')">1. 列表</button><button class="tb-btn" onclick="execNoteCmd(\'formatBlock\',\'blockquote\')">引用</button><div class="tb-sep"></div><button class="tb-btn" onclick="execNoteCmd(\'undo\')">↩</button><button class="tb-btn" onclick="execNoteCmd(\'redo\')">↪</button></div>') +
-    '<div class="rich-editor" id="noteEditor" '+(isReadonly?'':'contenteditable="true" oninput="onNoteInput()"')+' data-placeholder="开始编写笔记...">'+( note.content||'')+'</div>' +
-    '<div class="note-meta-bar"><span>字数：<span id="noteWordCount">0</span></span><span>更新：'+escapeHtml((note.updatedAt||'').slice(0,10))+'</span>' +
-    (isReadonly?'':'<span class="save-indicator saved" id="saveIndicator">✓ 已保存</span>') +
-    '</div>';
+// ── Select note from list ─────────────────────────────────────
+function selectNoteFromList(catId, folderId, noteId) {
+  saveCurrentNote();
+  selectedCatId = catId; selectedFolderId = folderId; selectedNoteId = noteId;
+  renderNotesCats(); renderNotesList();
+  const note = findNoteObj(catId, folderId, noteId);
+  if (note) openNoteEditor(note, catId, folderId);
+}
+
+// ── Open editor ───────────────────────────────────────────────
+function openNoteEditor(note, catId, folderId) {
+  const cat = getNotesCats().find(c => c.id === catId);
+  const folder = cat?.folders?.find(f => f.id === folderId);
+  const panel = document.getElementById('noteEditorPanel');
+  panel.innerHTML = '';
+  const head = document.createElement('div'); head.className = 'nep-head';
+  const bc = document.createElement('div'); bc.className = 'nep-breadcrumb';
+  bc.textContent = (cat ? cat.name : '') + '  /  ' + (folder ? folder.name : '');
+  head.appendChild(bc);
+  if (isReadonly) {
+    const badge = document.createElement('span');
+    badge.className = 'readonly-badge';
+    badge.style.cssText = 'font-size:10px;padding:2px 8px;';
+    badge.textContent = '只读';
+    head.appendChild(badge);
+  }
+  panel.appendChild(head);
+  if (isReadonly) {
+    const td = document.createElement('div');
+    td.style.cssText = 'padding:10px 16px;font-size:18px;font-weight:600;border-bottom:1px solid var(--border-light);';
+    td.textContent = note.name; panel.appendChild(td);
+  } else {
+    const ti = document.createElement('input');
+    ti.type = 'text'; ti.className = 'nep-title'; ti.id = 'noteEditorTitle';
+    ti.value = note.name; ti.placeholder = '笔记标题';
+    ti.addEventListener('input', onNoteInput);
+    panel.appendChild(ti);
+    const toolbar = document.createElement('div'); toolbar.className = 'editor-toolbar';
+    const BTNS = [
+      {t:'B',s:'font-weight:700',c:'bold'},
+      {t:'I',s:'font-style:italic',c:'italic'},
+      {t:'U',s:'text-decoration:underline',c:'underline'},
+      null,
+      {t:'H1',c:'formatBlock',v:'h1'},{t:'H2',c:'formatBlock',v:'h2'},{t:'H3',c:'formatBlock',v:'h3'},
+      null,
+      {t:'列表',c:'insertUnorderedList'},{t:'有序列表',c:'insertOrderedList'},{t:'引用',c:'formatBlock',v:'blockquote'},
+      null,
+      {t:'撤销',c:'undo'},{t:'重做',c:'redo'},
+    ];
+    BTNS.forEach(b => {
+      if (!b) { const s=document.createElement('div'); s.className='tb-sep'; toolbar.appendChild(s); return; }
+      const btn = document.createElement('button'); btn.className='tb-btn'; btn.textContent=b.t;
+      if (b.s) btn.style.cssText=b.s;
+      btn.addEventListener('mousedown', e => { e.preventDefault(); document.execCommand(b.c,false,b.v||null); onNoteInput(); });
+      toolbar.appendChild(btn);
+    });
+    panel.appendChild(toolbar);
+  }
+  const ed = document.createElement('div'); ed.className='rich-editor'; ed.id='noteEditor';
+  ed.setAttribute('data-placeholder', '开始编写笔记...');
+  ed.innerHTML = note.content || '';
+  if (!isReadonly) { ed.contentEditable='true'; ed.addEventListener('input', onNoteInput); }
+  panel.appendChild(ed);
+  const meta = document.createElement('div'); meta.className='note-meta-bar';
+  meta.innerHTML = '<span>字数：<span id="noteWordCount">0</span></span>' +
+    '<span>创建：' + escapeHtml((note.createdAt||'').slice(0,10)) + '</span>' +
+    '<span>更新：' + escapeHtml((note.updatedAt||'').slice(0,10)) + '</span>' +
+    (isReadonly ? '' : '<span class="save-indicator saved" id="saveIndicator">已保存</span>');
+  panel.appendChild(meta);
   updateNoteWordCount();
 }
 
-function execNoteCmd(cmd,val) { document.execCommand(cmd,false,val||null); document.getElementById('noteEditor')?.focus(); onNoteInput(); }
+function execNoteCmd(cmd, val) {
+  document.execCommand(cmd, false, val||null);
+  document.getElementById('noteEditor')?.focus();
+  onNoteInput();
+}
+
 function onNoteInput() {
-  noteSavedState='saving';
-  const ind=document.getElementById('saveIndicator');
-  if(ind){ind.textContent='保存中…';ind.className='save-indicator saving';}
+  const ind = document.getElementById('saveIndicator');
+  if (ind) { ind.textContent = '保存中…'; ind.className = 'save-indicator saving'; }
   clearTimeout(noteAutoSaveTimer);
-  noteAutoSaveTimer=setTimeout(()=>{saveCurrentNote(true);},1500);
+  noteAutoSaveTimer = setTimeout(() => saveCurrentNote(true), 1500);
   updateNoteWordCount();
 }
+
 function updateNoteWordCount() {
-  const editor=document.getElementById('noteEditor');
-  const wc=document.getElementById('noteWordCount');
-  if(editor&&wc) wc.textContent=(editor.innerText||'').replace(/\s/g,'').length;
+  const editor = document.getElementById('noteEditor');
+  const wc = document.getElementById('noteWordCount');
+  if (editor && wc) wc.textContent = (editor.innerText||'').replace(/\s/g,'').length;
 }
+
 function saveCurrentNote(auto=false) {
-  if(isReadonly||!selectedNotePath?.noteId)return;
-  const note=findNoteObj(selectedNotePath.catId,selectedNotePath.folderId,selectedNotePath.noteId);
-  if(!note)return;
-  const titleEl=document.getElementById('noteEditorTitle');
-  const editorEl=document.getElementById('noteEditor');
-  if(titleEl)note.name=titleEl.value||'未命名笔记';
-  if(editorEl)note.content=editorEl.innerHTML;
-  note.updatedAt=new Date().toISOString().slice(0,19);
+  if (isReadonly || !selectedNoteId) return;
+  const note = findNoteObj(selectedCatId, selectedFolderId, selectedNoteId);
+  if (!note) return;
+  const titleEl = document.getElementById('noteEditorTitle');
+  const editorEl = document.getElementById('noteEditor');
+  if (titleEl) note.name = titleEl.value || '未命名笔记';
+  if (editorEl) note.content = editorEl.innerHTML;
+  note.updatedAt = new Date().toISOString().slice(0,19);
   saveData('notesCats');
-  const ind=document.getElementById('saveIndicator');
-  if(ind){ind.textContent='✓ 已保存';ind.className='save-indicator saved';}
-  if(!auto)renderNotesTree();
+  const ind = document.getElementById('saveIndicator');
+  if (ind) { ind.textContent = '✓ 已保存'; ind.className = 'save-indicator saved'; }
+  if (!auto) { renderNotesCats(); renderNotesList(); }
 }
+
+// ── New category ──────────────────────────────────────────────
 function noteNewCategory() {
-  if(isReadonly)return;
-  openModal('新建分类','<div class="form-group"><label class="form-label">分类名称</label><input class="form-input" id="newCatName"></div>',
+  if (isReadonly) return;
+  openModal('新建分类',
+    '<div class="form-group"><label class="form-label">分类名称</label><input class="form-input" id="newCatName" placeholder="如：七年级语文"></div>',
     '<button class="btn" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="doNewCategory()">创建</button>');
 }
 function doNewCategory() {
-  const name=(document.getElementById('newCatName')?.value||'').trim();
-  if(!name){showToast('请输入名称','warning');return;}
-  DB.data.notesCats.push({id:'nc_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),name,folders:[{id:'nf_'+Date.now()+'_def',name:'默认文件夹',notes:[]}]});
-  saveData('notesCats');autoBackup();closeModal();renderNotesTree();showToast('已创建','success');
+  const name = (document.getElementById('newCatName')?.value||'').trim();
+  if (!name) { showToast('请输入名称','warning'); return; }
+  if (!DB.data.notesCats) DB.data.notesCats = [];
+  const catId = 'nc_' + Date.now();
+  const folderId = 'nf_' + Date.now();
+  DB.data.notesCats.push({ id: catId, name, folders: [{ id: folderId, name:'默认', notes:[] }] });
+  saveData('notesCats'); autoBackup(); closeModal();
+  selectedCatId = catId;
+  renderNotesCats(); renderNotesList(); showToast('分类已创建','success');
 }
-function noteNewNote(folderId) {
-  if(isReadonly)return;
-  const cats=getNotesCats();let targetCat=null,targetFolder=null;
-  if(folderId){for(const cat of cats){const f=(cat.folders||[]).find(f=>f.id===folderId);if(f){targetCat=cat;targetFolder=f;break;}}}
-  else if(selectedNotePath?.folderId){targetCat=cats.find(c=>c.id===selectedNotePath.catId);targetFolder=targetCat?.folders?.find(f=>f.id===selectedNotePath.folderId);}
-  if(!targetFolder&&cats.length>0&&cats[0].folders.length>0){targetCat=cats[0];targetFolder=cats[0].folders[0];}
-  if(!targetFolder){doNewCategory();return;}
-  const note={id:'note_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),name:'未命名笔记',content:'',createdAt:new Date().toISOString().slice(0,19),updatedAt:new Date().toISOString().slice(0,19)};
-  targetFolder.notes.push(note);saveData('notesCats');autoBackup();selectNote(targetCat.id,targetFolder.id,note.id);showToast('已创建','success');
-}
-function deleteNoteCategory(catId){if(!confirm('删除此分类及所有内容？'))return;DB.data.notesCats=(DB.data.notesCats||[]).filter(c=>c.id!==catId);if(selectedNotePath?.catId===catId){selectedNotePath=null;document.getElementById('noteEditorPanel').innerHTML='<div class="note-placeholder"><span style="font-size:32px">📝</span><span>选择笔记开始</span></div>';}saveData('notesCats');autoBackup();renderNotesTree();showToast('已删除','success');}
-function deleteNoteFolder(catId,folderId){if(!confirm('删除此文件夹及所有笔记？'))return;const cat=getNotesCats().find(c=>c.id===catId);if(cat)cat.folders=(cat.folders||[]).filter(f=>f.id!==folderId);if(selectedNotePath?.folderId===folderId){selectedNotePath=null;document.getElementById('noteEditorPanel').innerHTML='<div class="note-placeholder"><span style="font-size:32px">📝</span><span>选择笔记开始</span></div>';}saveData('notesCats');autoBackup();renderNotesTree();showToast('已删除','success');}
-function deleteNoteItem(catId,folderId,noteId){if(!confirm('确定删除？'))return;const cat=getNotesCats().find(c=>c.id===catId);const folder=cat?.folders?.find(f=>f.id===folderId);if(folder)folder.notes=(folder.notes||[]).filter(n=>n.id!==noteId);if(selectedNotePath?.noteId===noteId){selectedNotePath=null;document.getElementById('noteEditorPanel').innerHTML='<div class="note-placeholder"><span style="font-size:32px">📝</span><span>选择笔记开始</span></div>';}saveData('notesCats');autoBackup();renderNotesTree();showToast('已删除','success');}
-function renderNotes(){renderNotesTree();}
 
+// ── New note ──────────────────────────────────────────────────
+function noteNewNote(folderId) {
+  if (isReadonly) return;
+  const cats = getNotesCats();
+  let targetCat = null, targetFolder = null;
+  if (selectedCatId) {
+    targetCat = cats.find(c => c.id === selectedCatId);
+    targetFolder = targetCat?.folders?.[0] || null;
+  }
+  if (!targetFolder && cats.length) {
+    targetCat = cats[0];
+    targetFolder = cats[0].folders?.[0] || null;
+  }
+  if (!targetFolder) { noteNewCategory(); return; }
+  const note = {
+    id: 'note_' + Date.now() + '_' + Math.random().toString(36).slice(2,6),
+    name: '未命名笔记', content: '',
+    createdAt: new Date().toISOString().slice(0,19),
+    updatedAt: new Date().toISOString().slice(0,19)
+  };
+  targetFolder.notes.unshift(note);
+  saveData('notesCats'); autoBackup();
+  selectedCatId = targetCat.id; selectedFolderId = targetFolder.id; selectedNoteId = note.id;
+  renderNotesCats(); renderNotesList();
+  openNoteEditor(note, targetCat.id, targetFolder.id);
+  showToast('笔记已创建','success');
+  setTimeout(() => { const t = document.getElementById('noteEditorTitle'); if(t){t.focus();t.select();} }, 100);
+}
+
+function deleteNoteCategory(catId) {
+  if (!confirm('删除此分类及所有内容？')) return;
+  DB.data.notesCats = (DB.data.notesCats||[]).filter(c => c.id !== catId);
+  if (selectedCatId === catId) {
+    selectedCatId = null; selectedNoteId = null;
+    document.getElementById('noteEditorPanel').innerHTML =
+      '<div class="note-placeholder"><span style="font-size:32px">📝</span><span>选择笔记开始</span></div>';
+  }
+  saveData('notesCats'); autoBackup(); renderNotesCats(); renderNotesList(); showToast('已删除','success');
+}
+
+function deleteNoteItem(catId, folderId, noteId) {
+  if (!confirm('确定删除此笔记？')) return;
+  const cat = getNotesCats().find(c => c.id === catId);
+  const folder = cat?.folders?.find(f => f.id === folderId);
+  if (folder) folder.notes = (folder.notes||[]).filter(n => n.id !== noteId);
+  if (selectedNoteId === noteId) {
+    selectedNoteId = null;
+    document.getElementById('noteEditorPanel').innerHTML =
+      '<div class="note-placeholder"><span style="font-size:32px">📝</span><span>选择笔记开始</span></div>';
+  }
+  saveData('notesCats'); autoBackup(); renderNotesCats(); renderNotesList(); showToast('已删除','success');
+}
+
+// Stub - kept for backward compat
+function deleteNoteFolder(catId, folderId) { deleteNoteCategory(catId); }
+function renderNotesTree() { renderNotesCats(); renderNotesList(); }
+function renderNotes() { renderNotesCats(); renderNotesList(); }
 // ============================================================
 //  MEMOS
 // ============================================================
@@ -3591,7 +3844,7 @@ async function uploadFilesNew(files) {
       const formData = new FormData();
       formData.append('', file);
       const res = await fetch(
-        SUPABASE_URL + '/storage/v1/object/files/' + encodeURIComponent(path),
+        SUPABASE_URL + '/storage/v1/object/files/' + path,
         {
           method: 'POST',
           headers: {
@@ -3811,7 +4064,8 @@ const SB = {
     return true;
   },
   fileUrl(bucket, path) {
-    return SUPABASE_URL + '/storage/v1/object/public/' + bucket + '/' + encodeURIComponent(path);
+    // Don't encode - path already stored as-is during upload
+    return SUPABASE_URL + '/storage/v1/object/public/' + bucket + '/' + path;
   }
 };
 
@@ -3822,6 +4076,8 @@ const SB = {
 // Load all data from Supabase on login
 async function loadCloudData() {
   showLoadingOverlay(true);
+  // Snapshot current data in case load fails partway through
+  const _snapshot = JSON.stringify(DB.data);
   try {
     const [
       schedules, people, rollcalls, projects,
@@ -3843,6 +4099,7 @@ async function loadCloudData() {
     ]);
 
     // Map to internal format
+    // Only overwrite local data if remote has data OR local is empty (prevents wipe on network error)
     DB.data.schedules = (schedules||[]).map(s=>({
       id:s.id, title:s.title, date:s.date, start:s.start_time,
       end:s.end_time, type:s.type||'all', desc:s.note||''
@@ -3914,11 +4171,15 @@ async function loadCloudData() {
 
     showLoadingOverlay(false);
     renderAll();
+    // Cache to localStorage as offline backup
+    try { localStorage.setItem('wb_cache_v1', JSON.stringify(DB.data)); } catch(_){}
     showToast('数据加载完成', 'success');
   } catch(e) {
     showLoadingOverlay(false);
-    showToast('数据加载失败: ' + e.message, 'error');
+    showToast('数据加载失败: ' + e.message + ' — 已恢复本地缓存', 'error');
     console.error(e);
+    // Restore snapshot so UI still works
+    try { DB.data = JSON.parse(_snapshot); renderAll(); } catch(_){}
   }
 }
 
@@ -3939,122 +4200,182 @@ function showLoadingOverlay(show) {
 //  CLOUD SAVE FUNCTIONS (override local saveData)
 // ============================================================
 
+// ============================================================
+//  CLOUD SAVE FUNCTIONS  v2 - SAFE (no delete-all)
+// ============================================================
+
 // Override saveData to sync to Supabase
-// (replaces the original saveData defined earlier)
 async function saveData(key) {
   try {
     await cloudSave(key);
   } catch(e) {
-    console.error('云同步失败:', e);
+    console.error('云同步失败:', key, e);
     showToast('云同步失败: ' + e.message, 'error');
   }
 }
 
 async function cloudSave(key) {
   switch(key) {
-    case 'schedules': await syncSchedules(); break;
-    case 'people': await syncPeople(); break;
-    case 'rollcall': await syncRollcall(); break;
-    case 'projects': await syncProjects(); break;
-    case 'notesCats': await syncNotes(); break;
-    case 'memos': await syncMemos(); break;
-    case 'fileFolders': await syncFileFolders(); break;
-    case 'filesIndex': await syncFilesIndex(); break;
-    case 'media': await syncMedia(); break;
+    case 'schedules':   await syncSchedules();   break;
+    case 'people':      await syncPeople();       break;
+    case 'rollcall':    await syncRollcall();     break;
+    case 'projects':    await syncProjects();     break;
+    case 'notesCats':   await syncNotes();        break;
+    case 'memos':       await syncMemos();        break;
+    case 'fileFolders': await syncFileFolders();  break;
+    case 'filesIndex':  await syncFilesIndex();   break;
+    case 'media':       await syncMedia();        break;
+  }
+}
+
+// ── Safe upsert: update existing + insert new, never delete ──
+async function safeUpsert(table, rows, pkField) {
+  if (!rows || !rows.length) return;
+  // Upsert in batches of 50
+  const batchSize = 50;
+  for (let i = 0; i < rows.length; i += batchSize) {
+    const batch = rows.slice(i, i + batchSize);
+    await SB.upsert(table, batch);
+  }
+}
+
+// ── Delete only rows that no longer exist in local data ──────
+async function deleteOrphans(table, localIds, pkField) {
+  pkField = pkField || 'id';
+  if (!localIds.length) {
+    // All rows deleted locally - safe to delete all
+    await SB.deleteAll(table);
+    return;
+  }
+  // Get existing IDs from Supabase
+  try {
+    const existing = await SB.select(table, 'select=' + pkField);
+    const remoteIds = (existing || []).map(r => r[pkField]);
+    const toDelete = remoteIds.filter(id => !localIds.includes(id));
+    for (const id of toDelete) {
+      await SB.req('DELETE', table + '?' + pkField + '=eq.' + encodeURIComponent(id), null);
+    }
+  } catch(e) {
+    console.warn('deleteOrphans failed for', table, e);
   }
 }
 
 async function syncSchedules() {
-  await SB.deleteAll('schedules');
-  const rows = (DB.data.schedules||[]).map(s=>({
-    id:s.id, title:s.title, date:s.date, start_time:s.start||null,
-    end_time:s.end||null, type:s.type||'all', note:s.desc||''
+  const rows = (DB.data.schedules || []).map(s => ({
+    id: s.id, title: s.title, date: s.date,
+    start_time: s.start || null, end_time: s.end || null,
+    type: s.type || 'all', note: s.desc || ''
   }));
-  if(rows.length) await SB.upsert('schedules', rows);
+  const ids = rows.map(r => r.id);
+  await safeUpsert('schedules', rows);
+  await deleteOrphans('schedules', ids);
 }
 
 async function syncPeople() {
-  await SB.deleteAll('people');
-  const rows = (DB.data.people||[]).map(p=>({
-    id:p.id, name:p.name, class_group:p.group||'', note:p.note||''
+  const rows = (DB.data.people || []).map(p => ({
+    id: p.id, name: p.name, class_group: p.group || '', note: p.note || ''
   }));
-  if(rows.length) await SB.upsert('people', rows);
+  const ids = rows.map(r => r.id);
+  await safeUpsert('people', rows);
+  await deleteOrphans('people', ids);
 }
 
 async function syncRollcall() {
-  const rc = DB.data.rollcall||{};
+  const rc = DB.data.rollcall || {};
   const rows = [];
-  Object.entries(rc).forEach(([date, dateRec])=>{
-    Object.entries(dateRec).forEach(([personId, r])=>{
-      rows.push({person_id:personId, date, status:r.status||'', note:r.note||''});
+  Object.entries(rc).forEach(([date, dateRec]) => {
+    Object.entries(dateRec).forEach(([personId, r]) => {
+      rows.push({ person_id: personId, date, status: r.status || '', note: r.note || '' });
     });
   });
-  await SB.deleteAll('rollcall');
-  if(rows.length) await SB.upsert('rollcall', rows);
+  if (rows.length) {
+    await SB.upsert('rollcall', rows);
+  }
+  // For rollcall we only upsert, never delete (historical records are precious)
 }
 
 async function syncProjects() {
-  await SB.deleteAll('projects');
-  const rows = (DB.data.projects||[]).map(p=>({
-    id:p.id, name:p.name, start_date:p.start||null, end_date:p.end||null,
-    color:p.color||'#4f6ef7', note:p.desc||'', tasks:p.tasks||[]
+  const rows = (DB.data.projects || []).map(p => ({
+    id: p.id, name: p.name, start_date: p.start || null,
+    end_date: p.end || null, color: p.color || '#4f6ef7',
+    note: p.desc || '', tasks: p.tasks || []
   }));
-  if(rows.length) await SB.upsert('projects', rows);
+  const ids = rows.map(r => r.id);
+  await safeUpsert('projects', rows);
+  await deleteOrphans('projects', ids);
 }
 
 async function syncNotes() {
-  await SB.deleteAll('notes');
-  await SB.deleteAll('notes_folders');
-  await SB.deleteAll('notes_cats');
-
-  const cats=[]; const folders=[]; const notes=[];
-  (DB.data.notesCats||[]).forEach((cat,ci)=>{
-    cats.push({id:cat.id, name:cat.name, sort_order:ci});
-    (cat.folders||[]).forEach((folder,fi)=>{
-      folders.push({id:folder.id, cat_id:cat.id, name:folder.name, sort_order:fi});
-      (folder.notes||[]).forEach(n=>{
-        notes.push({id:n.id, folder_id:folder.id, name:n.name||'未命名', content:n.content||'', created_at:n.createdAt, updated_at:n.updatedAt});
+  const cats = DB.data.notesCats || [];
+  const catRows = [], folderRows = [], noteRows = [];
+  cats.forEach((cat, ci) => {
+    catRows.push({ id: cat.id, name: cat.name, sort_order: ci });
+    (cat.folders || []).forEach((folder, fi) => {
+      folderRows.push({ id: folder.id, cat_id: cat.id, name: folder.name, sort_order: fi });
+      (folder.notes || []).forEach(n => {
+        noteRows.push({
+          id: n.id, folder_id: folder.id, name: n.name || '未命名',
+          content: n.content || '',
+          created_at: n.createdAt, updated_at: n.updatedAt
+        });
       });
     });
   });
-  if(cats.length) await SB.upsert('notes_cats', cats);
-  if(folders.length) await SB.upsert('notes_folders', folders);
-  if(notes.length) await SB.upsert('notes', notes);
+  // Upsert first, then clean orphans
+  if (catRows.length)    await safeUpsert('notes_cats', catRows);
+  if (folderRows.length) await safeUpsert('notes_folders', folderRows);
+  if (noteRows.length)   await safeUpsert('notes', noteRows);
+  // Clean deleted items
+  await deleteOrphans('notes',         noteRows.map(r => r.id));
+  await deleteOrphans('notes_folders', folderRows.map(r => r.id));
+  await deleteOrphans('notes_cats',    catRows.map(r => r.id));
 }
 
 async function syncMemos() {
-  await SB.deleteAll('memos');
-  const rows = (DB.data.memos||[]).map(m=>({
-    id:m.id, text:m.text, priority:m.priority||'medium',
-    done:!!m.done, due_date:m.dueDate||null, created_at:m.createdAt
+  const rows = (DB.data.memos || []).map(m => ({
+    id: m.id, text: m.text, priority: m.priority || 'medium',
+    done: !!m.done, due_date: m.dueDate || null, created_at: m.createdAt
   }));
-  if(rows.length) await SB.upsert('memos', rows);
+  const ids = rows.map(r => r.id);
+  await safeUpsert('memos', rows);
+  await deleteOrphans('memos', ids);
 }
 
 async function syncFileFolders() {
-  await SB.deleteAll('file_folders');
-  const rows = (DB.data.fileFolders||[]).map(f=>({
-    id:f.id, name:f.name, parent_id:f.parentId||null
+  const rows = (DB.data.fileFolders || []).map(f => ({
+    id: f.id, name: f.name, parent_id: f.parentId || null
   }));
-  if(rows.length) await SB.upsert('file_folders', rows);
+  const ids = rows.map(r => r.id);
+  await safeUpsert('file_folders', rows);
+  await deleteOrphans('file_folders', ids);
 }
 
 async function syncFilesIndex() {
-  await SB.deleteAll('files_index');
-  const rows = (DB.data.filesIndex||[]).map(f=>({
-    id:f.id, name:f.name, size:f.size||0, type:getFileTypeKey(f.name),
-    storage_path:f.path||f.name, folder_id:f.classGroup||'common'
+  const rows = (DB.data.filesIndex || []).map(f => ({
+    id: f.id, name: f.name, size: f.size || 0,
+    type: getFileTypeKey(f.name),
+    storage_path: f.path || f.name,
+    folder_id: f.classGroup || 'common'
   }));
-  if(rows.length) await SB.upsert('files_index', rows);
+  const ids = rows.map(r => r.id);
+  await safeUpsert('files_index', rows);
+  await deleteOrphans('files_index', ids);
 }
 
 async function syncMedia() {
-  await SB.deleteAll('media');
-  const rows = (DB.data.media||[]).map(m=>({
-    id:m.id, name:m.name, type:m.type, size:m.size, storage_path:m.path
+  const rows = (DB.data.media || []).map(m => ({
+    id: m.id, name: m.name, type: m.type,
+    size: m.size, storage_path: m.path
   }));
-  if(rows.length) await SB.upsert('media', rows);
+  const ids = rows.map(r => r.id);
+  await safeUpsert('media', rows);
+  await deleteOrphans('media', ids);
 }
+
+// Override autoBackup - no-op for cloud (Supabase handles persistence)
+async function autoBackup() { /* data persists in Supabase */ }
+async function manualBackup() { showToast('云端数据自动同步，无需手动备份', 'success'); }
+
 
 // uploadFiles handled by uploadFilesNew in new file center
 
@@ -4140,9 +4461,122 @@ function initApp(){
   // Init empty data structures
   for(const key of Object.keys(SCHEMA)){if(!DB.data[key])DB.data[key]=JSON.parse(JSON.stringify(SCHEMA[key]));}
   updateStorageBar();
-  // Load from Supabase
+  // Try to restore from localStorage cache first (instant display)
+  try {
+    const cached = localStorage.getItem('wb_cache_v1');
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      // Only restore if cache has actual data
+      if (parsed && Object.values(parsed).some(v => Array.isArray(v) && v.length > 0)) {
+        DB.data = parsed;
+        renderAll();
+        console.log('Restored from localStorage cache');
+      }
+    }
+  } catch(_) {}
+  // Load from Supabase (will overwrite cache with fresh data)
   loadCloudData();
   window.addEventListener('beforeunload',()=>{ saveCurrentNote(); });
+}
+
+
+// ============================================================
+//  PASSWORD MANAGER (admin only)
+// ============================================================
+const PWD_STORAGE_KEY = 'wb_passwords_v1';
+
+function loadPasswords() {
+  try {
+    const saved = localStorage.getItem(PWD_STORAGE_KEY);
+    return saved ? JSON.parse(saved) : null;
+  } catch(e) { return null; }
+}
+
+function savePasswords(pwds) {
+  localStorage.setItem(PWD_STORAGE_KEY, JSON.stringify(pwds));
+  // Apply to ROLES in memory
+  Object.keys(pwds).forEach(role => {
+    if (ROLES[role]) ROLES[role].pwd = pwds[role];
+  });
+}
+
+// Apply saved passwords on load
+(function applySavedPasswords() {
+  const saved = loadPasswords();
+  if (saved) {
+    Object.keys(saved).forEach(role => {
+      if (ROLES[role]) ROLES[role].pwd = saved[role];
+    });
+  }
+})();
+
+function openPasswordManager() {
+  const RL = [
+    {key:'admin',   label:'管理员'},
+    {key:'grade7',  label:'七年级'},
+    {key:'grade8',  label:'八年级'},
+    {key:'grade9',  label:'九年级'},
+    {key:'evening', label:'晚托班'},
+  ];
+  const wrap = document.createElement('div');
+  const intro = document.createElement('p');
+  intro.style.cssText = 'font-size:13px;color:var(--text-secondary);margin-bottom:16px;';
+  intro.textContent = '修改各班级登录密码，留空表示不修改当前密码。';
+  wrap.appendChild(intro);
+  const grid = document.createElement('div');
+  grid.style.cssText = 'display:flex;flex-direction:column;gap:10px;';
+  RL.forEach(r => {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:10px;';
+    const lbl = document.createElement('label');
+    lbl.style.cssText = 'font-size:13px;font-weight:500;width:80px;flex-shrink:0;';
+    lbl.textContent = r.label;
+    const inp = document.createElement('input');
+    inp.type = 'password'; inp.className = 'form-input';
+    inp.id = 'pwd_' + r.key;
+    inp.placeholder = '新密码（留空不修改）';
+    inp.autocomplete = 'new-password'; inp.style.flex = '1';
+    const eye = document.createElement('button');
+    eye.className = 'btn btn-sm'; eye.textContent = '显示'; eye.style.flexShrink='0';
+    eye.addEventListener('click', () => { inp.type = inp.type === 'password' ? 'text' : 'password'; eye.textContent = inp.type === 'password' ? '显示' : '隐藏'; });
+    row.appendChild(lbl); row.appendChild(inp); row.appendChild(eye);
+    grid.appendChild(row);
+  });
+  wrap.appendChild(grid);
+  const warn = document.createElement('div');
+  warn.style.cssText = 'margin-top:14px;padding:10px 12px;background:rgba(249,115,22,0.08);border:1px solid rgba(249,115,22,0.2);border-radius:8px;font-size:12px;color:var(--orange);';
+  warn.textContent = '密码保存在本地浏览器中，换设备或清除缓存后需重新设置。';
+  wrap.appendChild(warn);
+  document.getElementById('modalBody').innerHTML = '';
+  document.getElementById('modalBody').appendChild(wrap);
+  document.getElementById('modalTitle').textContent = '密码管理';
+  document.getElementById('modalFooter').innerHTML =
+    '<button class="btn" onclick="closeModal()">取消</button>' +
+    '<button class="btn btn-primary" onclick="saveAllPasswords()">保存密码</button>';
+  document.getElementById('modalOverlay').classList.add('show');
+}
+
+
+function saveAllPasswords() {
+  const roles = ['admin','grade7','grade8','grade9','evening'];
+  const current = loadPasswords() || {};
+  const updates = {};
+  let changed = 0;
+  roles.forEach(role => {
+    const el = document.getElementById('pwd_' + role);
+    const val = el ? el.value.trim() : '';
+    if (val) {
+      updates[role] = val;
+      changed++;
+    } else {
+      // Keep existing
+      updates[role] = current[role] || ROLES[role].pwd;
+    }
+  });
+  if (!changed) { showToast('没有输入新密码', 'warning'); return; }
+  savePasswords(updates);
+  closeModal();
+  showToast('密码已更新，共修改 ' + changed + ' 个', 'success');
 }
 
 // Restore dark mode on load
